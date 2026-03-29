@@ -12,50 +12,18 @@ import type { Recipe } from '../types/recipe';
 import { formatPrepCook, formatRecipeDate, getTotalTime, sentenceCase } from '../utils/format';
 import { BowlIcon, ClockIcon, HeartIcon, PencilIcon, TrashIcon } from '../components/ui/Icons';
 
-interface GallerySlide {
-  id: string;
-  title: string;
-  caption: string;
-  imageClassName: string;
-}
-
-function buildGallerySlides(recipe: Recipe | null): GallerySlide[] {
-  if (!recipe) {
-    return [];
-  }
-
-  if (!recipe.image_url) {
-    return [
-      {
-        id: 'cover',
-        title: 'Recipe cover',
-        caption: 'Add more photos later to expand this gallery.',
-        imageClassName: 'object-center',
-      },
-    ];
-  }
-
-  return [
-    {
-      id: 'cover',
-      title: 'Hero plate',
-      caption: 'The full dish in its main serving moment.',
-      imageClassName: 'object-center',
-    },
-    {
-      id: 'detail',
-      title: 'Close detail',
-      caption: 'A tighter crop for texture, color, and finish.',
-      imageClassName: 'scale-110 object-[52%_52%]',
-    },
-    {
-      id: 'plated',
-      title: 'Table angle',
-      caption: 'A warmer crop for the plated final look.',
-      imageClassName: 'scale-[1.16] object-[58%_62%]',
-    },
-  ];
-}
+const GALLERY_MOSAIC_TILES = [
+  { id: 'mosaic-1', frameClass: 'col-span-2 row-span-2', imageClassName: 'scale-[1.04] object-[50%_48%]' },
+  { id: 'mosaic-2', frameClass: 'col-span-1 row-span-1', imageClassName: 'scale-[1.14] object-[28%_40%]' },
+  { id: 'mosaic-3', frameClass: 'col-span-1 row-span-1', imageClassName: 'scale-[1.16] object-[72%_42%]' },
+  { id: 'mosaic-4', frameClass: 'col-span-2 row-span-1', imageClassName: 'scale-[1.08] object-[55%_62%]' },
+  { id: 'mosaic-5', frameClass: 'col-span-1 row-span-2', imageClassName: 'scale-[1.18] object-[34%_58%]' },
+  { id: 'mosaic-6', frameClass: 'col-span-1 row-span-1', imageClassName: 'scale-[1.12] object-[66%_54%]' },
+  { id: 'mosaic-7', frameClass: 'col-span-2 row-span-1', imageClassName: 'scale-[1.1] object-[48%_70%]' },
+  { id: 'mosaic-8', frameClass: 'col-span-1 row-span-1', imageClassName: 'scale-[1.18] object-[76%_64%]' },
+  { id: 'mosaic-9', frameClass: 'col-span-1 row-span-1', imageClassName: 'scale-[1.1] object-[38%_30%]' },
+  { id: 'mosaic-10', frameClass: 'col-span-2 row-span-2', imageClassName: 'scale-[1.16] object-[58%_52%]' },
+] as const;
 
 export function RecipeDetailPage() {
   const { slug } = useParams();
@@ -67,8 +35,6 @@ export function RecipeDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
-  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
-  const gallerySlides = buildGallerySlides(recipe);
 
   useEffect(() => {
     const loadRecipe = async () => {
@@ -98,24 +64,6 @@ export function RecipeDetailPage() {
 
     void loadRecipe();
   }, [slug]);
-
-  useEffect(() => {
-    setActiveGalleryIndex(0);
-  }, [recipe?.id]);
-
-  useEffect(() => {
-    if (gallerySlides.length <= 1) {
-      return undefined;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setActiveGalleryIndex((currentIndex) => (currentIndex + 1) % gallerySlides.length);
-    }, 3600);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [gallerySlides.length]);
 
   const handleDelete = async () => {
     if (!recipe) {
@@ -320,85 +268,27 @@ export function RecipeDetailPage() {
         </section>
       ) : null}
 
-      <section className="surface-panel px-5 py-6 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
-              Gallery
-            </p>
-            <p className="mt-2 text-sm text-recipe-ink/68 dark:text-recipe-sand/70">
-              A quick roulette of recipe visuals.
-            </p>
-          </div>
-          {gallerySlides.length > 1 ? (
-            <div className="flex items-center gap-2">
-              {gallerySlides.map((slide, index) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => setActiveGalleryIndex(index)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    index === activeGalleryIndex
-                      ? 'w-8 bg-recipe-orange'
-                      : 'w-2.5 bg-recipe-ink/18 hover:bg-recipe-orange/45 dark:bg-recipe-sand/18'
-                  }`}
-                  aria-label={`Show ${slide.title}`}
-                />
-              ))}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="mt-5 overflow-hidden rounded-[30px] border border-white/10 bg-[#1b100b]/35">
-          <div
-            className="flex transition-transform duration-700 ease-out"
-            style={{ transform: `translateX(-${activeGalleryIndex * 100}%)` }}
-          >
-            {gallerySlides.map((slide) => (
-              <div key={slide.id} className="relative w-full shrink-0">
-                <RecipeImage
-                  src={recipe.image_url}
-                  alt={`${recipe.title} ${slide.title}`}
-                  className={`aspect-[16/8.5] w-full object-cover transition duration-700 ${slide.imageClassName}`}
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/14 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/76">
-                    {slide.title}
-                  </p>
-                  <p className="mt-2 text-sm text-white/82">{slide.caption}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {gallerySlides.length > 1 ? (
-          <div className="mt-4 flex gap-3 overflow-x-auto pb-1 scrollbar-none">
-            {gallerySlides.map((slide, index) => (
-              <button
-                key={`${slide.id}-thumb`}
-                type="button"
-                onClick={() => setActiveGalleryIndex(index)}
-                className={`group relative overflow-hidden rounded-[22px] border transition duration-300 ${
-                  index === activeGalleryIndex
-                    ? 'border-recipe-orange/60'
-                    : 'border-white/10 hover:border-recipe-orange/35'
-                }`}
+      {recipe.image_url ? (
+        <section className="relative mx-auto max-w-[1460px] pt-2">
+          <div className="pointer-events-none absolute left-[12%] top-[22%] -z-10 h-52 w-52 rounded-full bg-recipe-orange/10 blur-3xl" />
+          <div className="grid grid-cols-2 auto-rows-[120px] gap-2 sm:auto-rows-[150px] sm:gap-3 lg:grid-cols-4 xl:grid-cols-6 xl:auto-rows-[120px]">
+            {GALLERY_MOSAIC_TILES.map((tile, index) => (
+              <div
+                key={tile.id}
+                className={`group relative overflow-hidden rounded-[24px] bg-[#1b100b]/20 ring-1 ring-white/8 transition duration-300 hover:ring-2 hover:ring-recipe-orange/75 hover:shadow-[0_0_0_1px_rgba(242,143,52,0.34),0_20px_40px_rgba(242,143,52,0.2)] ${tile.frameClass}`}
               >
                 <RecipeImage
                   src={recipe.image_url}
-                  alt={`${recipe.title} ${slide.title} preview`}
-                  className={`h-24 w-40 object-cover transition duration-500 group-hover:scale-105 ${slide.imageClassName}`}
+                  alt={`${recipe.title} mosaic view ${index + 1}`}
+                  className={`h-full w-full object-cover transition duration-700 group-hover:scale-[1.07] ${tile.imageClassName}`}
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-black/20" />
-              </button>
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),transparent_40%,rgba(17,10,7,0.22))] opacity-80 transition duration-300 group-hover:opacity-50" />
+              </div>
             ))}
           </div>
-        ) : null}
-      </section>
+        </section>
+      ) : null}
     </article>
   );
 }

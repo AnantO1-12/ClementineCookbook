@@ -11,7 +11,7 @@ export function ErrorState({
 }: ErrorStateProps) {
   return (
     <div className="surface-panel flex min-h-[280px] flex-col items-center justify-center gap-5 px-6 py-10 text-center">
-      <div className="rounded-full bg-rose-100 p-4 text-rose-500">
+      <div className="rounded-full bg-rose-100 p-4 text-rose-500 dark:bg-rose-500/12 dark:text-rose-300">
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
@@ -28,8 +28,10 @@ export function ErrorState({
         </svg>
       </div>
       <div className="space-y-2">
-        <h2 className="font-display text-2xl text-recipe-ink">{title}</h2>
-        <p className="max-w-xl text-sm leading-7 text-recipe-ink/70">{message}</p>
+        <h2 className="font-display text-2xl text-recipe-ink dark:text-recipe-sand">{title}</h2>
+        <p className="max-w-xl text-sm leading-7 text-recipe-ink/70 dark:text-recipe-sand/68">
+          {message}
+        </p>
       </div>
       {onRetry ? (
         <button type="button" onClick={onRetry} className="btn-secondary">

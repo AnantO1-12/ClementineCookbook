@@ -276,7 +276,7 @@ export function RecipeForm({
             {errors.servings ? <p className="field-error">{errors.servings}</p> : null}
           </div>
 
-          <label className="flex items-center gap-3 rounded-3xl border border-recipe-creamDeep bg-recipe-cream/70 px-4 py-4 text-sm text-recipe-ink/80">
+          <label className="flex items-center gap-3 rounded-3xl border border-recipe-creamDeep bg-recipe-cream/70 px-4 py-4 text-sm text-recipe-ink/80 dark:border-recipe-clay/60 dark:bg-[#2a1b15] dark:text-recipe-sand/78">
             <input
               type="checkbox"
               checked={values.is_favorite}
@@ -290,8 +290,10 @@ export function RecipeForm({
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="font-display text-2xl text-recipe-ink">Ingredients</h2>
-              <p className="text-sm text-recipe-ink/65">Keep each line easy to scan at a glance.</p>
+              <h2 className="font-display text-2xl text-recipe-ink dark:text-recipe-sand">Ingredients</h2>
+              <p className="text-sm text-recipe-ink/65 dark:text-recipe-sand/62">
+                Keep each line easy to scan at a glance.
+              </p>
             </div>
             <button type="button" onClick={() => addListItem('ingredients')} className="btn-ghost">
               <PlusIcon className="h-4 w-4" />
@@ -326,8 +328,10 @@ export function RecipeForm({
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="font-display text-2xl text-recipe-ink">Instructions</h2>
-              <p className="text-sm text-recipe-ink/65">Break the method into calm, readable steps.</p>
+              <h2 className="font-display text-2xl text-recipe-ink dark:text-recipe-sand">Instructions</h2>
+              <p className="text-sm text-recipe-ink/65 dark:text-recipe-sand/62">
+                Break the method into calm, readable steps.
+              </p>
             </div>
             <button type="button" onClick={() => addListItem('instructions')} className="btn-ghost">
               <PlusIcon className="h-4 w-4" />
@@ -381,17 +385,17 @@ export function RecipeForm({
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
               Image
             </p>
-            <h2 className="font-display text-2xl text-recipe-ink">Recipe cover</h2>
+            <h2 className="font-display text-2xl text-recipe-ink dark:text-recipe-sand">Recipe cover</h2>
           </div>
 
-          <div className="flex rounded-full bg-recipe-cream p-1">
+          <div className="flex rounded-full bg-recipe-cream p-1 dark:bg-[#2a1b15]">
             <button
               type="button"
               onClick={() => setImageMode('url')}
               className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold transition ${
                 imageMode === 'url'
-                  ? 'bg-white text-recipe-ink shadow-sm'
-                  : 'text-recipe-ink/60 hover:text-recipe-ink'
+                  ? 'bg-white text-recipe-ink shadow-sm dark:bg-[#1b120e] dark:text-recipe-sand dark:shadow-none'
+                  : 'text-recipe-ink/60 hover:text-recipe-ink dark:text-recipe-sand/55 dark:hover:text-recipe-sand'
               }`}
             >
               Image URL
@@ -401,8 +405,8 @@ export function RecipeForm({
               onClick={() => setImageMode('upload')}
               className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold transition ${
                 imageMode === 'upload'
-                  ? 'bg-white text-recipe-ink shadow-sm'
-                  : 'text-recipe-ink/60 hover:text-recipe-ink'
+                  ? 'bg-white text-recipe-ink shadow-sm dark:bg-[#1b120e] dark:text-recipe-sand dark:shadow-none'
+                  : 'text-recipe-ink/60 hover:text-recipe-ink dark:text-recipe-sand/55 dark:hover:text-recipe-sand'
               }`}
             >
               Upload file
@@ -421,20 +425,20 @@ export function RecipeForm({
                 className="field-input"
                 placeholder="https://images.example.com/your-dish.jpg"
               />
-              <p className="mt-2 text-xs leading-6 text-recipe-ink/55">
+              <p className="mt-2 text-xs leading-6 text-recipe-ink/55 dark:text-recipe-sand/55">
                 Use this if you want the simplest setup without Storage.
               </p>
             </div>
           ) : (
-            <div className="rounded-[28px] border border-dashed border-recipe-creamDeep bg-recipe-cream/60 p-5">
+            <div className="rounded-[28px] border border-dashed border-recipe-creamDeep bg-recipe-cream/60 p-5 dark:border-recipe-clay/60 dark:bg-[#2a1b15]">
               <label className="flex cursor-pointer flex-col items-center gap-3 text-center">
-                <span className="rounded-full bg-white p-3 text-recipe-ember shadow-sm">
+                <span className="rounded-full bg-white p-3 text-recipe-ember shadow-sm dark:bg-[#1b120e] dark:text-recipe-copper dark:shadow-none">
                   <UploadIcon className="h-5 w-5" />
                 </span>
-                <span className="text-sm font-semibold text-recipe-ink">
+                <span className="text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
                   {imageFile ? imageFile.name : 'Choose an image to upload'}
                 </span>
-                <span className="text-xs leading-6 text-recipe-ink/55">
+                <span className="text-xs leading-6 text-recipe-ink/55 dark:text-recipe-sand/55">
                   Upload uses the optional Supabase Storage bucket from the SQL docs.
                 </span>
                 <input
@@ -447,7 +451,7 @@ export function RecipeForm({
             </div>
           )}
 
-          <div className="overflow-hidden rounded-[28px] bg-recipe-cream/80">
+          <div className="overflow-hidden rounded-[28px] bg-recipe-cream/80 dark:bg-[#2a1b15]">
             <RecipeImage
               src={imagePreview}
               alt="Recipe preview"
@@ -462,11 +466,11 @@ export function RecipeForm({
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
               Finish
             </p>
-            <h2 className="mt-1 font-display text-2xl text-recipe-ink">
+            <h2 className="mt-1 font-display text-2xl text-recipe-ink dark:text-recipe-sand">
               {mode === 'create' ? 'Save a new recipe' : 'Update this recipe'}
             </h2>
           </div>
-          <p className="text-sm leading-7 text-recipe-ink/68">
+          <p className="text-sm leading-7 text-recipe-ink/68 dark:text-recipe-sand/66">
             The form keeps structure lightweight, but the end result is still ready for a
             polished personal cookbook.
           </p>

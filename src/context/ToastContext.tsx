@@ -49,25 +49,29 @@ export function ToastProvider({ children }: PropsWithChildren) {
             key={toast.id}
             className={`pointer-events-auto rounded-3xl border px-4 py-3 shadow-soft backdrop-blur-sm transition ${
               toast.tone === 'success'
-                ? 'border-orange-200 bg-white/95'
+                ? 'border-orange-200 bg-white/95 dark:border-recipe-orange/30 dark:bg-[#1b120e]/95'
                 : toast.tone === 'error'
-                  ? 'border-rose-200 bg-rose-50/95'
-                  : 'border-slate-200 bg-white/95'
+                  ? 'border-rose-200 bg-rose-50/95 dark:border-rose-400/25 dark:bg-[#2b1516]/95'
+                  : 'border-slate-200 bg-white/95 dark:border-recipe-clay/40 dark:bg-[#1b120e]/95'
             }`}
             role="status"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-recipe-ink">{toast.title}</p>
+                <p className="text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
+                  {toast.title}
+                </p>
                 {toast.description ? (
-                  <p className="mt-1 text-sm text-recipe-ink/70">{toast.description}</p>
+                  <p className="mt-1 text-sm text-recipe-ink/70 dark:text-recipe-sand/70">
+                    {toast.description}
+                  </p>
                 ) : null}
               </div>
 
               <button
                 type="button"
                 onClick={() => dismissToast(toast.id)}
-                className="rounded-full p-1 text-recipe-ink/45 transition hover:bg-black/5 hover:text-recipe-ink"
+                className="rounded-full p-1 text-recipe-ink/45 transition hover:bg-black/5 hover:text-recipe-ink dark:text-recipe-sand/45 dark:hover:bg-white/5 dark:hover:text-recipe-sand"
                 aria-label="Dismiss notification"
               >
                 <svg

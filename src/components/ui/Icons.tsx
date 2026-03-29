@@ -121,3 +121,27 @@ export function LogoutIcon(props: IconProps) {
     </BaseIcon>
   );
 }
+
+export function SunIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <circle cx="12" cy="12" r="4.5" />
+      <path d="M12 2.5v2.5" />
+      <path d="M12 19v2.5" />
+      <path d="m4.9 4.9 1.8 1.8" />
+      <path d="m17.3 17.3 1.8 1.8" />
+      <path d="M2.5 12H5" />
+      <path d="M19 12h2.5" />
+      <path d="m4.9 19.1 1.8-1.8" />
+      <path d="m17.3 6.7 1.8-1.8" />
+    </BaseIcon>
+  );
+}
+
+export function MoonIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />
+    </BaseIcon>
+  );
+}

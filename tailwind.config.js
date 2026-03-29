@@ -1,4 +1,5 @@
 export default {
+    darkMode: 'class',
     content: ['./index.html', './src/**/*.{ts,tsx}'],
     theme: {
         extend: {
@@ -11,6 +12,11 @@ export default {
                     orange: '#f28f34',
                     ember: '#cb5d19',
                     apricot: '#ffd3aa',
+                    copper: '#ffb462',
+                    sand: '#f8e7d5',
+                    clay: '#764221',
+                    dusk: '#221510',
+                    night: '#140c09',
                 },
             },
             fontFamily: {

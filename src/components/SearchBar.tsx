@@ -9,13 +9,13 @@ interface SearchBarProps {
 export function SearchBar({ value, onChange, isPending = false }: SearchBarProps) {
   return (
     <label className="surface-panel flex items-center gap-3 px-4 py-3">
-      <SearchIcon className="h-5 w-5 text-recipe-ink/45" />
+      <SearchIcon className="h-5 w-5 text-recipe-ink/45 dark:text-recipe-sand/45" />
       <input
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder="Search by title, category, or cuisine"
-        className="w-full bg-transparent text-sm text-recipe-ink placeholder:text-recipe-ink/45 focus:outline-none"
+        className="w-full bg-transparent text-sm text-recipe-ink placeholder:text-recipe-ink/45 focus:outline-none dark:text-recipe-sand dark:placeholder:text-recipe-sand/45"
         aria-label="Search recipes"
       />
       {isPending ? (

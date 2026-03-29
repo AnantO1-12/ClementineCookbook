@@ -135,10 +135,10 @@ export function EditRecipePage() {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-recipe-orange">
           Edit recipe
         </p>
-        <h1 className="font-display text-4xl text-recipe-ink sm:text-5xl">
+        <h1 className="font-display text-4xl text-recipe-ink dark:text-recipe-sand sm:text-5xl">
           Tune the details and keep the shelf sharp.
         </h1>
-        <p className="max-w-2xl text-base leading-8 text-recipe-ink/70">
+        <p className="max-w-2xl text-base leading-8 text-recipe-ink/70 dark:text-recipe-sand/70">
           Refresh timings, adjust notes, or swap the cover image without losing the calm structure of the recipe page.
         </p>
       </section>

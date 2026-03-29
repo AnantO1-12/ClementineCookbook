@@ -54,19 +54,19 @@ export function LoginPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-recipe-orange">
             Admin sign-in
           </p>
-          <h1 className="font-display text-4xl leading-tight text-recipe-ink sm:text-5xl">
+          <h1 className="font-display text-4xl leading-tight text-recipe-ink dark:text-recipe-sand sm:text-5xl">
             Public browsing, private editing.
           </h1>
-          <p className="max-w-lg text-base leading-8 text-recipe-ink/72">
+          <p className="max-w-lg text-base leading-8 text-recipe-ink/72 dark:text-recipe-sand/70">
             Recipes stay visible to everyone, but adding, updating, and deleting dishes is reserved for your admin account.
           </p>
         </div>
 
-        <div className="rounded-[32px] bg-recipe-cream p-5">
-          <p className="text-sm leading-7 text-recipe-ink/70">
+        <div className="rounded-[32px] bg-recipe-cream p-5 dark:bg-[#2a1b15]">
+          <p className="text-sm leading-7 text-recipe-ink/70 dark:text-recipe-sand/68">
             Create your admin user in Supabase Auth first, then sign in here with that email and password.
           </p>
-          <Link to="/" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-recipe-ember">
+          <Link to="/" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-recipe-ember dark:text-recipe-copper">
             <span>Back to recipes</span>
             <ArrowRightIcon className="h-4 w-4" />
           </Link>
@@ -80,8 +80,10 @@ export function LoginPage() {
               <LoginIcon className="h-5 w-5" />
             </span>
             <div>
-              <p className="font-display text-3xl text-recipe-ink">Sign in</p>
-              <p className="text-sm text-recipe-ink/60">Use your Supabase email/password credentials.</p>
+              <p className="font-display text-3xl text-recipe-ink dark:text-recipe-sand">Sign in</p>
+              <p className="text-sm text-recipe-ink/60 dark:text-recipe-sand/58">
+                Use your Supabase email/password credentials.
+              </p>
             </div>
           </div>
 

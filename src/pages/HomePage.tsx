@@ -58,17 +58,17 @@ export function HomePage() {
   const favoriteCount = recipes.filter((recipe) => recipe.is_favorite).length;
 
   return (
-    <div className="space-y-8">
-      <section className="surface-panel grid gap-6 overflow-hidden px-5 py-6 sm:px-7 sm:py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div className="space-y-6">
+    <div className="space-y-8 xl:space-y-10">
+      <section className="surface-panel grid gap-6 overflow-hidden px-5 py-6 sm:px-7 sm:py-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-center xl:gap-10 xl:px-10 xl:py-10 2xl:grid-cols-[0.84fr_1.16fr]">
+        <div className="space-y-7 xl:pr-4">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-recipe-orange">
               Your kitchen notebook
             </p>
-            <h1 className="max-w-2xl font-display text-4xl leading-tight text-recipe-ink sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-3xl font-display text-4xl leading-[0.96] text-recipe-ink dark:text-recipe-sand sm:text-5xl xl:text-[4.25rem] 2xl:text-[4.9rem]">
               A calm, citrus-toned home for every recipe you actually cook.
             </h1>
-            <p className="max-w-xl text-base leading-8 text-recipe-ink/70">
+            <p className="max-w-2xl text-base leading-8 text-recipe-ink/70 dark:text-recipe-sand/70 xl:text-lg">
               Browse favorites, search by category or cuisine, and keep your personal cookbook
               polished enough to feel special every time you open it.
             </p>
@@ -85,23 +85,29 @@ export function HomePage() {
           />
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-[26px] bg-recipe-cream px-4 py-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45">
+            <div className="rounded-[28px] border border-white/70 bg-recipe-cream/85 px-5 py-5 shadow-sm dark:border-recipe-clay/40 dark:bg-[#2b1c16]/90">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
                 Recipes
               </p>
-              <p className="mt-2 font-display text-3xl text-recipe-ink">{recipes.length}</p>
+              <p className="mt-2 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                {recipes.length}
+              </p>
             </div>
-            <div className="rounded-[26px] bg-recipe-cream px-4 py-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45">
+            <div className="rounded-[28px] border border-white/70 bg-recipe-cream/85 px-5 py-5 shadow-sm dark:border-recipe-clay/40 dark:bg-[#2b1c16]/90">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
                 Categories
               </p>
-              <p className="mt-2 font-display text-3xl text-recipe-ink">{categories.length}</p>
+              <p className="mt-2 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                {categories.length}
+              </p>
             </div>
-            <div className="rounded-[26px] bg-recipe-cream px-4 py-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45">
+            <div className="rounded-[28px] border border-white/70 bg-recipe-cream/85 px-5 py-5 shadow-sm dark:border-recipe-clay/40 dark:bg-[#2b1c16]/90">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
                 Favorites
               </p>
-              <p className="mt-2 font-display text-3xl text-recipe-ink">{favoriteCount}</p>
+              <p className="mt-2 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                {favoriteCount}
+              </p>
             </div>
           </div>
 
@@ -123,24 +129,24 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-[34px] bg-recipe-cream">
+        <div className="relative overflow-hidden rounded-[36px] bg-recipe-cream shadow-card dark:bg-[#2b1c16]">
           <RecipeImage
             src={featuredRecipe?.image_url}
             alt={featuredRecipe?.title ?? 'Featured recipe preview'}
-            className="aspect-[4/4.4] w-full object-cover"
+            className="aspect-[4/3] w-full object-cover sm:aspect-[16/11] lg:aspect-[6/7] 2xl:aspect-[16/15]"
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-recipe-ink/85 via-recipe-ink/20 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 space-y-4 p-6 text-white sm:p-7">
+          <div className="absolute inset-x-0 bottom-0 space-y-4 p-6 text-white sm:p-7 xl:p-8">
             <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/80">
               {featuredRecipe?.category ? <span>{sentenceCase(featuredRecipe.category)}</span> : null}
               {featuredRecipe?.cuisine ? <span>{sentenceCase(featuredRecipe.cuisine)}</span> : null}
             </div>
             <div>
-              <p className="font-display text-3xl sm:text-4xl">
+              <p className="font-display text-3xl sm:text-4xl xl:text-[2.75rem]">
                 {featuredRecipe?.title ?? 'Your recipes will shine here'}
               </p>
-              <p className="mt-2 max-w-md text-sm leading-7 text-white/82">
+              <p className="mt-2 max-w-xl text-sm leading-7 text-white/82 xl:text-base">
                 {featuredRecipe?.description ||
                   'Seed the database and the home page will spotlight one of your dishes here.'}
               </p>
@@ -158,7 +164,7 @@ export function HomePage() {
 
       {error ? <ErrorState message={error} onRetry={refresh} /> : null}
 
-      <section className="surface-panel space-y-5 px-5 py-5 sm:px-6">
+      <section className="surface-panel space-y-5 px-5 py-5 sm:px-6 xl:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
@@ -175,7 +181,7 @@ export function HomePage() {
             />
           </div>
 
-          <label className="flex flex-col gap-2 text-sm font-semibold text-recipe-ink">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
             Sort recipes
             <select
               value={sortBy}
@@ -199,11 +205,13 @@ export function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
               Results
             </p>
-            <h2 className="mt-1 font-display text-3xl text-recipe-ink">
+            <h2 className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
               {filteredRecipes.length} recipe{filteredRecipes.length === 1 ? '' : 's'}
             </h2>
           </div>
-          {isPending ? <p className="text-sm text-recipe-ink/55">Refreshing the grid…</p> : null}
+          {isPending ? (
+            <p className="text-sm text-recipe-ink/55 dark:text-recipe-sand/55">Refreshing the grid…</p>
+          ) : null}
         </div>
 
         {loading ? <LoadingSpinner label="Setting the table..." /> : null}
@@ -224,7 +232,7 @@ export function HomePage() {
         ) : null}
 
         {!loading && filteredRecipes.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {filteredRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}

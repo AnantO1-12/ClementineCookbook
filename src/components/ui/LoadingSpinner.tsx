@@ -15,7 +15,7 @@ export function LoadingSpinner({
     >
       <div className="flex flex-col items-center gap-3 text-center">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-recipe-orange/20 border-t-recipe-orange" />
-        <p className="text-sm font-medium text-recipe-ink/70">{label}</p>
+        <p className="text-sm font-medium text-recipe-ink/70 dark:text-recipe-sand/68">{label}</p>
       </div>
     </div>
   );

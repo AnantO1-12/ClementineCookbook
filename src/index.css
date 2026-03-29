@@ -5,15 +5,37 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    color-scheme: light;
+    background-color: #fff7ef;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    background-color: #140c09;
   }
 
   body {
-    @apply min-h-screen bg-recipe-cream font-sans text-recipe-ink antialiased;
-    background-image: linear-gradient(180deg, #fff9f2 0%, #fff7ef 36%, #fef2e5 100%);
+    @apply min-h-screen bg-recipe-cream font-sans text-recipe-ink antialiased transition-colors duration-300;
+    background-image: linear-gradient(180deg, #fffbf7 0%, #fff7ef 36%, #feecd8 100%);
+  }
+
+  html.dark body {
+    @apply bg-recipe-night text-recipe-sand;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(255, 180, 98, 0.16), transparent 0 24%),
+      radial-gradient(circle at 82% 14%, rgba(242, 143, 52, 0.14), transparent 0 22%),
+      radial-gradient(circle at 76% 74%, rgba(203, 93, 25, 0.18), transparent 0 26%),
+      linear-gradient(180deg, #1a0f0b 0%, #160d0a 38%, #110907 100%);
   }
 
   a {
     color: inherit;
+  }
+
+  input,
+  textarea,
+  select {
+    color-scheme: inherit;
   }
 
   #root {
@@ -28,23 +50,41 @@
 
 @layer components {
   .app-shell {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-12 2xl:px-14;
+    max-width: 1540px;
   }
 
   .surface-panel {
-    @apply rounded-[34px] border border-white/70 bg-white/85 shadow-soft backdrop-blur-sm;
+    @apply rounded-[34px] border border-white/70 bg-white/85 shadow-soft backdrop-blur-sm transition-colors duration-300;
+  }
+
+  html.dark .surface-panel {
+    @apply border-recipe-clay/50 bg-recipe-dusk/85;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
   }
 
   .field-label {
-    @apply mb-2 block text-sm font-semibold text-recipe-ink/80;
+    @apply mb-2 block text-sm font-semibold text-recipe-ink/80 transition-colors duration-300;
+  }
+
+  html.dark .field-label {
+    @apply text-recipe-sand/80;
   }
 
   .field-input {
     @apply w-full rounded-[24px] border border-recipe-creamDeep bg-white px-4 py-3 text-sm text-recipe-ink shadow-sm transition placeholder:text-recipe-ink/40 focus:border-recipe-orange focus:outline-none focus:ring-4 focus:ring-recipe-apricot/50;
   }
 
+  html.dark .field-input {
+    @apply border-recipe-clay/70 bg-[#2a1b15] text-recipe-sand placeholder:text-recipe-sand/40 focus:ring-recipe-orange/20;
+  }
+
   .textarea-field {
     @apply w-full resize-y rounded-[24px] border border-recipe-creamDeep bg-white px-4 py-3 text-sm text-recipe-ink shadow-sm transition placeholder:text-recipe-ink/40 focus:border-recipe-orange focus:outline-none focus:ring-4 focus:ring-recipe-apricot/50;
+  }
+
+  html.dark .textarea-field {
+    @apply border-recipe-clay/70 bg-[#2a1b15] text-recipe-sand placeholder:text-recipe-sand/40 focus:ring-recipe-orange/20;
   }
 
   .field-error {
@@ -55,28 +95,57 @@
     @apply inline-flex items-center gap-2 rounded-full bg-recipe-orange px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
   }
 
+  html.dark .btn-primary {
+    @apply shadow-none hover:bg-recipe-copper;
+    box-shadow: 0 18px 36px rgba(242, 143, 52, 0.18);
+  }
+
   .btn-secondary {
     @apply inline-flex items-center gap-2 rounded-full border border-recipe-creamDeep bg-white px-5 py-3 text-sm font-semibold text-recipe-ink transition hover:-translate-y-0.5 hover:border-recipe-orange/60 hover:text-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
+  }
+
+  html.dark .btn-secondary {
+    @apply border-recipe-clay/70 bg-[#2a1b15] text-recipe-sand hover:border-recipe-orange/60 hover:text-recipe-copper;
   }
 
   .btn-ghost {
     @apply inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-recipe-ink transition hover:bg-white/70 disabled:cursor-not-allowed disabled:opacity-70;
   }
 
+  html.dark .btn-ghost {
+    @apply text-recipe-sand hover:bg-white/5;
+  }
+
   .pill-button {
     @apply inline-flex shrink-0 items-center rounded-full border border-recipe-creamDeep bg-white px-4 py-2 text-sm font-semibold text-recipe-ink/75 transition hover:border-recipe-orange/50 hover:text-recipe-ember;
+  }
+
+  html.dark .pill-button {
+    @apply border-recipe-clay/70 bg-[#2a1b15] text-recipe-sand/80 hover:border-recipe-orange/50 hover:text-recipe-copper;
   }
 
   .pill-active {
     @apply inline-flex shrink-0 items-center rounded-full bg-recipe-orange px-4 py-2 text-sm font-semibold text-white shadow-sm;
   }
 
+  html.dark .pill-active {
+    @apply bg-recipe-copper text-recipe-night;
+  }
+
   .icon-button {
     @apply inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-recipe-creamDeep bg-white text-recipe-ink/60 transition hover:border-recipe-orange/60 hover:text-recipe-ember;
   }
 
+  html.dark .icon-button {
+    @apply border-recipe-clay/70 bg-[#2a1b15] text-recipe-sand/60 hover:border-recipe-orange/60 hover:text-recipe-copper;
+  }
+
   .glass-chip {
     @apply rounded-full bg-white/90 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-recipe-ink shadow-sm backdrop-blur;
+  }
+
+  html.dark .glass-chip {
+    @apply border border-white/10 bg-[#1a110d]/85 text-recipe-sand shadow-none;
   }
 
   .truncate-2 {

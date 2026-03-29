@@ -1,4 +1,5 @@
 declare const _default: {
+    darkMode: "class";
     content: string[];
     theme: {
         extend: {
@@ -11,6 +12,11 @@ declare const _default: {
                     orange: string;
                     ember: string;
                     apricot: string;
+                    copper: string;
+                    sand: string;
+                    clay: string;
+                    dusk: string;
+                    night: string;
                 };
             };
             fontFamily: {

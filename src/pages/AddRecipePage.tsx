@@ -58,10 +58,10 @@ export function AddRecipePage() {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-recipe-orange">
           Add recipe
         </p>
-        <h1 className="font-display text-4xl text-recipe-ink sm:text-5xl">
+        <h1 className="font-display text-4xl text-recipe-ink dark:text-recipe-sand sm:text-5xl">
           Capture a dish before it slips away.
         </h1>
-        <p className="max-w-2xl text-base leading-8 text-recipe-ink/70">
+        <p className="max-w-2xl text-base leading-8 text-recipe-ink/70 dark:text-recipe-sand/70">
           Keep it simple: title, timings, ingredients, instructions, and an image that makes the shelf feel alive.
         </p>
       </section>

@@ -131,7 +131,7 @@ export function RecipeDetailPage() {
   return (
     <article className="space-y-8">
       <section className="grid gap-8 xl:grid-cols-[1fr_0.95fr] xl:items-start">
-        <div className="overflow-hidden rounded-[36px] bg-recipe-cream shadow-soft">
+        <div className="overflow-hidden rounded-[36px] bg-recipe-cream shadow-soft dark:bg-[#2b1c16]">
           <RecipeImage
             src={recipe.image_url}
             alt={recipe.title}
@@ -148,30 +148,32 @@ export function RecipeDetailPage() {
           </div>
 
           <div className="space-y-3">
-            <h1 className="font-display text-4xl leading-tight text-recipe-ink sm:text-5xl">
+            <h1 className="font-display text-4xl leading-tight text-recipe-ink dark:text-recipe-sand sm:text-5xl">
               {recipe.title}
             </h1>
-            <p className="max-w-2xl text-base leading-8 text-recipe-ink/72">
+            <p className="max-w-2xl text-base leading-8 text-recipe-ink/72 dark:text-recipe-sand/70">
               {recipe.description || 'A personal classic worth keeping close at hand.'}
             </p>
-            <p className="text-sm text-recipe-ink/50">Added {formatRecipeDate(recipe.created_at)}</p>
+            <p className="text-sm text-recipe-ink/50 dark:text-recipe-sand/50">
+              Added {formatRecipeDate(recipe.created_at)}
+            </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[28px] bg-white px-4 py-4 shadow-card">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45">
+            <div className="rounded-[28px] bg-white px-4 py-4 shadow-card dark:border dark:border-recipe-clay/40 dark:bg-[#1d1410] dark:shadow-none">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
                 Time
               </p>
-              <div className="mt-3 space-y-2 text-sm text-recipe-ink/75">
+              <div className="mt-3 space-y-2 text-sm text-recipe-ink/75 dark:text-recipe-sand/74">
                 <p className="inline-flex items-center gap-2"><ClockIcon className="h-4 w-4" />{formatPrepCook(recipe)}</p>
                 <p>{getTotalTime(recipe)} total</p>
               </div>
             </div>
-            <div className="rounded-[28px] bg-white px-4 py-4 shadow-card">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45">
+            <div className="rounded-[28px] bg-white px-4 py-4 shadow-card dark:border dark:border-recipe-clay/40 dark:bg-[#1d1410] dark:shadow-none">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
                 Servings
               </p>
-              <div className="mt-3 space-y-2 text-sm text-recipe-ink/75">
+              <div className="mt-3 space-y-2 text-sm text-recipe-ink/75 dark:text-recipe-sand/74">
                 <p className="inline-flex items-center gap-2"><BowlIcon className="h-4 w-4" />{recipe.servings || 'Flexible'}</p>
                 <p>{recipe.instructions.length} steps</p>
               </div>
@@ -206,7 +208,7 @@ export function RecipeDetailPage() {
           </p>
           <ul className="mt-4 space-y-3">
             {recipe.ingredients.map((ingredient, index) => (
-              <li key={`${recipe.id}-ingredient-${index}`} className="flex gap-3 text-sm leading-7 text-recipe-ink/80">
+              <li key={`${recipe.id}-ingredient-${index}`} className="flex gap-3 text-sm leading-7 text-recipe-ink/80 dark:text-recipe-sand/78">
                 <span className="mt-[0.8rem] h-2 w-2 rounded-full bg-recipe-orange" />
                 <span>{ingredient}</span>
               </li>
@@ -220,12 +222,12 @@ export function RecipeDetailPage() {
           </p>
           <ol className="mt-4 space-y-4">
             {recipe.instructions.map((instruction, index) => (
-              <li key={`${recipe.id}-instruction-${index}`} className="rounded-[26px] bg-recipe-cream px-4 py-4">
+              <li key={`${recipe.id}-instruction-${index}`} className="rounded-[26px] bg-recipe-cream px-4 py-4 dark:bg-[#2a1b15]">
                 <div className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white font-display text-xl text-recipe-ember shadow-sm">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white font-display text-xl text-recipe-ember shadow-sm dark:bg-[#1c130e] dark:text-recipe-copper dark:shadow-none">
                     {index + 1}
                   </span>
-                  <p className="pt-1 text-sm leading-7 text-recipe-ink/78">{instruction}</p>
+                  <p className="pt-1 text-sm leading-7 text-recipe-ink/78 dark:text-recipe-sand/76">{instruction}</p>
                 </div>
               </li>
             ))}
@@ -238,7 +240,9 @@ export function RecipeDetailPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
             Notes
           </p>
-          <p className="mt-4 max-w-3xl text-sm leading-8 text-recipe-ink/76">{recipe.notes}</p>
+          <p className="mt-4 max-w-3xl text-sm leading-8 text-recipe-ink/76 dark:text-recipe-sand/74">
+            {recipe.notes}
+          </p>
         </section>
       ) : null}
     </article>

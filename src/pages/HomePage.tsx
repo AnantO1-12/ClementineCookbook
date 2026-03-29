@@ -200,15 +200,12 @@ export function HomePage() {
 
       {error ? <ErrorState message={error} onRetry={refresh} /> : null}
 
-      <section className="space-y-5">
+      <section className="mx-auto max-w-[1360px] space-y-5">
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
               Results
             </p>
-            <h2 className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
-              {filteredRecipes.length} recipe{filteredRecipes.length === 1 ? '' : 's'}
-            </h2>
           </div>
           {isPending ? (
             <p className="text-sm text-recipe-ink/55 dark:text-recipe-sand/55">Refreshing the grid…</p>
@@ -233,7 +230,7 @@ export function HomePage() {
         ) : null}
 
         {!loading && filteredRecipes.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {filteredRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}

@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-recipe-cream font-sans text-recipe-ink antialiased;
+    background-image: linear-gradient(180deg, #fff9f2 0%, #fff7ef 36%, #fef2e5 100%);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: rgba(242, 143, 52, 0.25);
+    color: #2e241e;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .surface-panel {
+    @apply rounded-[34px] border border-white/70 bg-white/85 shadow-soft backdrop-blur-sm;
+  }
+
+  .field-label {
+    @apply mb-2 block text-sm font-semibold text-recipe-ink/80;
+  }
+
+  .field-input {
+    @apply w-full rounded-[24px] border border-recipe-creamDeep bg-white px-4 py-3 text-sm text-recipe-ink shadow-sm transition placeholder:text-recipe-ink/40 focus:border-recipe-orange focus:outline-none focus:ring-4 focus:ring-recipe-apricot/50;
+  }
+
+  .textarea-field {
+    @apply w-full resize-y rounded-[24px] border border-recipe-creamDeep bg-white px-4 py-3 text-sm text-recipe-ink shadow-sm transition placeholder:text-recipe-ink/40 focus:border-recipe-orange focus:outline-none focus:ring-4 focus:ring-recipe-apricot/50;
+  }
+
+  .field-error {
+    @apply mt-2 text-sm text-rose-500;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-full bg-recipe-orange px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 rounded-full border border-recipe-creamDeep bg-white px-5 py-3 text-sm font-semibold text-recipe-ink transition hover:-translate-y-0.5 hover:border-recipe-orange/60 hover:text-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-recipe-ink transition hover:bg-white/70 disabled:cursor-not-allowed disabled:opacity-70;
+  }
+
+  .pill-button {
+    @apply inline-flex shrink-0 items-center rounded-full border border-recipe-creamDeep bg-white px-4 py-2 text-sm font-semibold text-recipe-ink/75 transition hover:border-recipe-orange/50 hover:text-recipe-ember;
+  }
+
+  .pill-active {
+    @apply inline-flex shrink-0 items-center rounded-full bg-recipe-orange px-4 py-2 text-sm font-semibold text-white shadow-sm;
+  }
+
+  .icon-button {
+    @apply inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-recipe-creamDeep bg-white text-recipe-ink/60 transition hover:border-recipe-orange/60 hover:text-recipe-ember;
+  }
+
+  .glass-chip {
+    @apply rounded-full bg-white/90 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-recipe-ink shadow-sm backdrop-blur;
+  }
+
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}

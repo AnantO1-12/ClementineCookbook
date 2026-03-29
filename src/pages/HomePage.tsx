@@ -74,6 +74,52 @@ export function HomePage() {
 
   const featuredRecipe = filteredRecipes[0] ?? recipes[0] ?? null;
   const favoriteCount = recipes.filter((recipe) => recipe.is_favorite).length;
+  const featuredRecipePanelClasses =
+    'relative z-10 mt-4 overflow-hidden rounded-[30px] border border-white/45 bg-white/12 shadow-[0_18px_38px_rgba(89,42,16,0.15)] backdrop-blur-xl dark:border-recipe-clay/40 dark:bg-[#1d120d]/22 lg:mt-0 lg:w-full lg:max-w-[620px] lg:justify-self-end xl:max-w-[680px] 2xl:max-w-[710px] animate-rise';
+  const featuredRecipePanelContent = (
+    <>
+      <RecipeImage
+        src={featuredRecipe?.image_url}
+        alt={featuredRecipe?.title ?? 'Featured recipe preview'}
+        className="aspect-[4/3] w-full object-cover transition duration-700 sm:aspect-[16/11] lg:aspect-[16/11] 2xl:aspect-[1.55/1] group-hover:scale-[1.03]"
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-recipe-night/90 via-recipe-burnt/18 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 space-y-2.5 p-4 text-white sm:p-5 xl:p-6">
+        <div className="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
+          {featuredRecipe?.category ? <span>{sentenceCase(featuredRecipe.category)}</span> : null}
+          {featuredRecipe?.cuisine ? <span>{sentenceCase(featuredRecipe.cuisine)}</span> : null}
+        </div>
+        <div>
+          <p className="font-display text-[1.7rem] sm:text-[2rem] xl:text-[2.1rem]">
+            {featuredRecipe?.title ?? 'Your recipes will shine here'}
+          </p>
+          <p className="mt-1 max-w-xl text-[13px] leading-5 text-white/82 xl:text-[0.9rem]">
+            {featuredRecipe?.description ||
+              'Seed the database and the home page will spotlight one of your dishes here.'}
+          </p>
+        </div>
+        {featuredRecipe ? (
+          <div className="flex flex-wrap gap-2.5 text-[12px] text-white/85">
+            <span>{formatPrepCook(featuredRecipe)}</span>
+            <span>{getTotalTime(featuredRecipe)} total</span>
+            {featuredRecipe.servings ? <span>{featuredRecipe.servings} servings</span> : null}
+          </div>
+        ) : null}
+      </div>
+
+      {featuredRecipe ? (
+        <div className="absolute bottom-3 right-3 hidden rounded-[22px] border border-white/20 bg-[#fff4e6]/92 px-3 py-2 shadow-[0_16px_32px_rgba(78,31,9,0.2)] backdrop-blur xl:block dark:border-white/10 dark:bg-[#1b120e]/88">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-recipe-burnt/70 dark:text-recipe-peel/70">
+            Tonight's pull
+          </p>
+          <p className="mt-1 font-display text-base text-recipe-burnt dark:text-recipe-peel">
+            {featuredRecipe.category ? sentenceCase(featuredRecipe.category) : 'Featured'}
+          </p>
+        </div>
+      ) : null}
+    </>
+  );
 
   return (
     <div className="space-y-10 xl:space-y-14">
@@ -174,49 +220,20 @@ export function HomePage() {
           </section>
         </div>
 
-        <div className="relative z-10 mt-4 overflow-hidden rounded-[30px] border border-white/45 bg-white/12 shadow-[0_18px_38px_rgba(89,42,16,0.15)] backdrop-blur-xl dark:border-recipe-clay/40 dark:bg-[#1d120d]/22 lg:mt-0 lg:w-full lg:max-w-[620px] lg:justify-self-end xl:max-w-[680px] 2xl:max-w-[710px] animate-rise" style={{ animationDelay: '140ms' }}>
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-recipe-peel via-recipe-orange to-recipe-ember" />
-          <RecipeImage
-            src={featuredRecipe?.image_url}
-            alt={featuredRecipe?.title ?? 'Featured recipe preview'}
-            className="aspect-[4/3] w-full object-cover transition duration-700 sm:aspect-[16/11] lg:aspect-[16/11] 2xl:aspect-[1.55/1]"
-            loading="eager"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-recipe-night/90 via-recipe-burnt/18 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 space-y-2.5 p-4 text-white sm:p-5 xl:p-6">
-            <div className="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
-              {featuredRecipe?.category ? <span>{sentenceCase(featuredRecipe.category)}</span> : null}
-              {featuredRecipe?.cuisine ? <span>{sentenceCase(featuredRecipe.cuisine)}</span> : null}
-            </div>
-            <div>
-              <p className="font-display text-[1.7rem] sm:text-[2rem] xl:text-[2.1rem]">
-                {featuredRecipe?.title ?? 'Your recipes will shine here'}
-              </p>
-              <p className="mt-1 max-w-xl text-[13px] leading-5 text-white/82 xl:text-[0.9rem]">
-                {featuredRecipe?.description ||
-                  'Seed the database and the home page will spotlight one of your dishes here.'}
-              </p>
-            </div>
-            {featuredRecipe ? (
-              <div className="flex flex-wrap gap-2.5 text-[12px] text-white/85">
-                <span>{formatPrepCook(featuredRecipe)}</span>
-                <span>{getTotalTime(featuredRecipe)} total</span>
-                {featuredRecipe.servings ? <span>{featuredRecipe.servings} servings</span> : null}
-              </div>
-            ) : null}
+        {featuredRecipe ? (
+          <Link
+            to={`/recipes/${featuredRecipe.slug}`}
+            aria-label={`Open featured recipe: ${featuredRecipe.title}`}
+            className={`${featuredRecipePanelClasses} group block transition duration-500 hover:-translate-y-1 hover:shadow-[0_26px_54px_rgba(89,42,16,0.22)] dark:hover:border-recipe-orange/30`}
+            style={{ animationDelay: '140ms' }}
+          >
+            {featuredRecipePanelContent}
+          </Link>
+        ) : (
+          <div className={featuredRecipePanelClasses} style={{ animationDelay: '140ms' }}>
+            {featuredRecipePanelContent}
           </div>
-
-          {featuredRecipe ? (
-            <div className="absolute bottom-3 right-3 hidden rounded-[22px] border border-white/20 bg-[#fff4e6]/92 px-3 py-2 shadow-[0_16px_32px_rgba(78,31,9,0.2)] backdrop-blur xl:block dark:border-white/10 dark:bg-[#1b120e]/88">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-recipe-burnt/70 dark:text-recipe-peel/70">
-                Tonight's pull
-              </p>
-              <p className="mt-1 font-display text-base text-recipe-burnt dark:text-recipe-peel">
-                {featuredRecipe.category ? sentenceCase(featuredRecipe.category) : 'Featured'}
-              </p>
-            </div>
-          ) : null}
-        </div>
+        )}
       </section>
 
       {error ? <ErrorState message={error} onRetry={refresh} /> : null}

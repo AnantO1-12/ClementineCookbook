@@ -12,6 +12,51 @@ import type { Recipe } from '../types/recipe';
 import { formatPrepCook, formatRecipeDate, getTotalTime, sentenceCase } from '../utils/format';
 import { BowlIcon, ClockIcon, HeartIcon, PencilIcon, TrashIcon } from '../components/ui/Icons';
 
+interface GallerySlide {
+  id: string;
+  title: string;
+  caption: string;
+  imageClassName: string;
+}
+
+function buildGallerySlides(recipe: Recipe | null): GallerySlide[] {
+  if (!recipe) {
+    return [];
+  }
+
+  if (!recipe.image_url) {
+    return [
+      {
+        id: 'cover',
+        title: 'Recipe cover',
+        caption: 'Add more photos later to expand this gallery.',
+        imageClassName: 'object-center',
+      },
+    ];
+  }
+
+  return [
+    {
+      id: 'cover',
+      title: 'Hero plate',
+      caption: 'The full dish in its main serving moment.',
+      imageClassName: 'object-center',
+    },
+    {
+      id: 'detail',
+      title: 'Close detail',
+      caption: 'A tighter crop for texture, color, and finish.',
+      imageClassName: 'scale-110 object-[52%_52%]',
+    },
+    {
+      id: 'plated',
+      title: 'Table angle',
+      caption: 'A warmer crop for the plated final look.',
+      imageClassName: 'scale-[1.16] object-[58%_62%]',
+    },
+  ];
+}
+
 export function RecipeDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -22,6 +67,8 @@ export function RecipeDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
+  const gallerySlides = buildGallerySlides(recipe);
 
   useEffect(() => {
     const loadRecipe = async () => {
@@ -51,6 +98,24 @@ export function RecipeDetailPage() {
 
     void loadRecipe();
   }, [slug]);
+
+  useEffect(() => {
+    setActiveGalleryIndex(0);
+  }, [recipe?.id]);
+
+  useEffect(() => {
+    if (gallerySlides.length <= 1) {
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveGalleryIndex((currentIndex) => (currentIndex + 1) % gallerySlides.length);
+    }, 3600);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [gallerySlides.length]);
 
   const handleDelete = async () => {
     if (!recipe) {
@@ -229,14 +294,14 @@ export function RecipeDetailPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
             Instructions
           </p>
-          <ol className="mt-4 space-y-5">
+          <ol className="mt-5 space-y-6">
             {recipe.instructions.map((instruction, index) => (
-              <li key={`${recipe.id}-instruction-${index}`} className="border-b border-white/8 pb-5 last:border-b-0 last:pb-0">
+              <li key={`${recipe.id}-instruction-${index}`}>
                 <div className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/6 font-display text-xl text-recipe-ember shadow-sm dark:border-white/8 dark:bg-[#1c130e]/45 dark:text-recipe-copper dark:shadow-none">
+                  <span className="flex w-8 shrink-0 justify-center font-display text-[2rem] leading-none text-recipe-orange/88 dark:text-recipe-copper/92">
                     {index + 1}
                   </span>
-                  <p className="pt-1 text-sm leading-7 text-recipe-ink/78 dark:text-recipe-sand/76">{instruction}</p>
+                  <p className="pt-0.5 text-sm leading-7 text-recipe-ink/78 dark:text-recipe-sand/76">{instruction}</p>
                 </div>
               </li>
             ))}
@@ -254,6 +319,86 @@ export function RecipeDetailPage() {
           </p>
         </section>
       ) : null}
+
+      <section className="surface-panel px-5 py-6 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
+              Gallery
+            </p>
+            <p className="mt-2 text-sm text-recipe-ink/68 dark:text-recipe-sand/70">
+              A quick roulette of recipe visuals.
+            </p>
+          </div>
+          {gallerySlides.length > 1 ? (
+            <div className="flex items-center gap-2">
+              {gallerySlides.map((slide, index) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => setActiveGalleryIndex(index)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    index === activeGalleryIndex
+                      ? 'w-8 bg-recipe-orange'
+                      : 'w-2.5 bg-recipe-ink/18 hover:bg-recipe-orange/45 dark:bg-recipe-sand/18'
+                  }`}
+                  aria-label={`Show ${slide.title}`}
+                />
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mt-5 overflow-hidden rounded-[30px] border border-white/10 bg-[#1b100b]/35">
+          <div
+            className="flex transition-transform duration-700 ease-out"
+            style={{ transform: `translateX(-${activeGalleryIndex * 100}%)` }}
+          >
+            {gallerySlides.map((slide) => (
+              <div key={slide.id} className="relative w-full shrink-0">
+                <RecipeImage
+                  src={recipe.image_url}
+                  alt={`${recipe.title} ${slide.title}`}
+                  className={`aspect-[16/8.5] w-full object-cover transition duration-700 ${slide.imageClassName}`}
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/14 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/76">
+                    {slide.title}
+                  </p>
+                  <p className="mt-2 text-sm text-white/82">{slide.caption}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {gallerySlides.length > 1 ? (
+          <div className="mt-4 flex gap-3 overflow-x-auto pb-1 scrollbar-none">
+            {gallerySlides.map((slide, index) => (
+              <button
+                key={`${slide.id}-thumb`}
+                type="button"
+                onClick={() => setActiveGalleryIndex(index)}
+                className={`group relative overflow-hidden rounded-[22px] border transition duration-300 ${
+                  index === activeGalleryIndex
+                    ? 'border-recipe-orange/60'
+                    : 'border-white/10 hover:border-recipe-orange/35'
+                }`}
+              >
+                <RecipeImage
+                  src={recipe.image_url}
+                  alt={`${recipe.title} ${slide.title} preview`}
+                  className={`h-24 w-40 object-cover transition duration-500 group-hover:scale-105 ${slide.imageClassName}`}
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/20" />
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </section>
     </article>
   );
 }

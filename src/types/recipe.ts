@@ -52,8 +52,6 @@ export interface RecipeMutationInput {
   is_favorite: boolean;
 }
 
-export type RecipeSort = 'newest' | 'alphabetical';
-
 export type FormErrors = Partial<
   Record<keyof RecipeFormValues | 'ingredients' | 'instructions' | 'submit', string>
 >;

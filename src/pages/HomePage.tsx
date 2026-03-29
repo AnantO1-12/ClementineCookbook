@@ -10,7 +10,6 @@ import { ErrorState } from '../components/ui/ErrorState';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { useAuth } from '../hooks/useAuth';
 import { useRecipes } from '../hooks/useRecipes';
-import type { RecipeSort } from '../types/recipe';
 import { formatPrepCook, getTotalTime, sentenceCase } from '../utils/format';
 import { ArrowRightIcon, PlusIcon } from '../components/ui/Icons';
 
@@ -19,7 +18,6 @@ export function HomePage() {
   const { isAuthenticated } = useAuth();
   const [searchValue, setSearchValue] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState<RecipeSort>('newest');
   const [isPending, startTransition] = useTransition();
   const deferredSearch = useDeferredValue(searchValue);
 
@@ -51,10 +49,6 @@ export function HomePage() {
       return matchesSearch && matchesCategory;
     })
     .sort((left, right) => {
-      if (sortBy === 'alphabetical') {
-        return left.title.localeCompare(right.title);
-      }
-
       return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
     });
 
@@ -69,7 +63,28 @@ export function HomePage() {
         <div className="pointer-events-none absolute -right-12 top-12 h-64 w-64 rounded-full bg-recipe-marmalade/20 blur-3xl animate-drift-reverse dark:bg-recipe-copper/18" />
 
         <div className="relative z-10 space-y-6 xl:pr-8">
-          <div className="animate-rise space-y-3" style={{ animationDelay: '90ms' }}>
+          <div
+            className="animate-rise flex items-center gap-4 sm:gap-5"
+            style={{ animationDelay: '70ms' }}
+          >
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/72 shadow-[0_18px_40px_rgba(108,46,16,0.18)] ring-1 ring-white/25 dark:border-recipe-clay/50 dark:bg-[#271711]/92 dark:ring-recipe-copper/20 sm:h-20 sm:w-20">
+              <img
+                src="/clementine-slice-logo.png"
+                alt="Clementine orange slice logo"
+                className="citrus-logo h-12 w-12 object-contain sm:h-16 sm:w-16"
+              />
+            </span>
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-recipe-burnt dark:text-recipe-peel sm:text-xs">
+                Clementine Notebook
+              </p>
+              <p className="max-w-md text-sm leading-6 text-recipe-burnt/68 dark:text-recipe-copper/88 sm:text-base">
+                A softer rhythm for recipes you actually make.
+              </p>
+            </div>
+          </div>
+
+          <div className="animate-rise space-y-3" style={{ animationDelay: '130ms' }}>
             <p className="text-xs font-semibold uppercase tracking-[0.34em] text-recipe-burnt dark:text-recipe-peel">
               Search the cookbook
             </p>
@@ -88,39 +103,21 @@ export function HomePage() {
             size="hero"
           />
 
-          <section className="flow-band animate-rise space-y-5" style={{ animationDelay: '180ms' }}>
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-              <div className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
-                  Explore the shelf
-                </p>
-                <CategoryFilter
-                  categories={categories}
-                  selected={selectedCategory}
-                  includeFavorites
-                  onSelect={(category) => {
-                    startTransition(() => {
-                      setSelectedCategory(category);
-                    });
-                  }}
-                />
-              </div>
-
-              <label className="flex flex-col gap-2 text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
-                Sort recipes
-                <select
-                  value={sortBy}
-                  onChange={(event) => {
-                    startTransition(() => {
-                      setSortBy(event.target.value as RecipeSort);
-                    });
-                  }}
-                  className="field-input min-w-[220px]"
-                >
-                  <option value="newest">Newest first</option>
-                  <option value="alphabetical">Alphabetical</option>
-                </select>
-              </label>
+          <section className="flow-band animate-rise space-y-5" style={{ animationDelay: '220ms' }}>
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
+                Explore the shelf
+              </p>
+              <CategoryFilter
+                categories={categories}
+                selected={selectedCategory}
+                includeFavorites
+                onSelect={(category) => {
+                  startTransition(() => {
+                    setSelectedCategory(category);
+                  });
+                }}
+              />
             </div>
 
             <div className="flex flex-wrap gap-3">

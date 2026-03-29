@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
-import { LoginIcon, LogoutIcon, MoonIcon, PlusIcon, SunIcon } from './ui/Icons';
+import { LoginIcon, LogoutIcon, PlusIcon } from './ui/Icons';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -27,7 +27,7 @@ export function Navbar() {
   const { isAuthenticated, loading, signOut } = useAuth();
   const { showToast } = useToast();
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [theme, setTheme] = useState<ThemeMode>(() => getInitialTheme());
+  const [theme] = useState<ThemeMode>(() => getInitialTheme());
   const navPillBase =
     'inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition duration-300';
   const navPillInactive = `${navPillBase} border-white/12 bg-white/10 text-[#ffe9d4] hover:-translate-y-0.5 hover:bg-white/16 hover:text-white`;
@@ -87,23 +87,6 @@ export function Navbar() {
         </div>
 
         <nav className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <NavLink
-            to="/"
-            className={({ isActive }) => (isActive ? navPillActive : navPillInactive)}
-          >
-            Recipes
-          </NavLink>
-
-          <button
-            type="button"
-            onClick={() => setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'))}
-            className={navPillInactive}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            {theme === 'dark' ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
-            <span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
-          </button>
-
           {isAuthenticated ? (
             <NavLink
               to="/recipes/new"

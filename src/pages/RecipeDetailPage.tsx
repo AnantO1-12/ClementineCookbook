@@ -35,6 +35,7 @@ export function RecipeDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
+  const [expandedGalleryIndex, setExpandedGalleryIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const loadRecipe = async () => {
@@ -58,12 +59,30 @@ export function RecipeDetailPage() {
       } catch (fetchError) {
         setError(fetchError instanceof Error ? fetchError.message : 'Unable to load this recipe.');
       } finally {
-        setLoading(false);
-      }
-    };
+      setLoading(false);
+    }
+  };
 
     void loadRecipe();
   }, [slug]);
+
+  useEffect(() => {
+    if (expandedGalleryIndex === null) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setExpandedGalleryIndex(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [expandedGalleryIndex]);
 
   const handleDelete = async () => {
     if (!recipe) {
@@ -238,7 +257,7 @@ export function RecipeDetailPage() {
           </ul>
         </div>
 
-        <div className="surface-panel px-5 py-6 sm:px-6">
+        <div className="px-2 py-2 sm:px-3">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
             Instructions
           </p>
@@ -273,9 +292,12 @@ export function RecipeDetailPage() {
           <div className="pointer-events-none absolute left-[12%] top-[22%] -z-10 h-52 w-52 rounded-full bg-recipe-orange/10 blur-3xl" />
           <div className="grid grid-cols-2 auto-rows-[120px] gap-2 sm:auto-rows-[150px] sm:gap-3 lg:grid-cols-4 xl:grid-cols-6 xl:auto-rows-[120px]">
             {GALLERY_MOSAIC_TILES.map((tile, index) => (
-              <div
+              <button
                 key={tile.id}
+                type="button"
+                onClick={() => setExpandedGalleryIndex(index)}
                 className={`group relative overflow-hidden rounded-[24px] bg-[#1b100b]/20 ring-1 ring-white/8 transition duration-300 hover:ring-2 hover:ring-recipe-orange/75 hover:shadow-[0_0_0_1px_rgba(242,143,52,0.34),0_20px_40px_rgba(242,143,52,0.2)] ${tile.frameClass}`}
+                aria-label={`Expand recipe image ${index + 1}`}
               >
                 <RecipeImage
                   src={recipe.image_url}
@@ -284,10 +306,38 @@ export function RecipeDetailPage() {
                   loading="lazy"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),transparent_40%,rgba(17,10,7,0.22))] opacity-80 transition duration-300 group-hover:opacity-50" />
-              </div>
+              </button>
             ))}
           </div>
         </section>
+      ) : null}
+
+      {recipe.image_url && expandedGalleryIndex !== null ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(16,8,5,0.86)] px-4 py-6 backdrop-blur-md"
+          onClick={() => setExpandedGalleryIndex(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Expanded recipe image"
+        >
+          <div className="relative w-full max-w-6xl" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setExpandedGalleryIndex(null)}
+              className="absolute right-4 top-4 z-10 rounded-full border border-white/18 bg-black/28 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white transition duration-300 hover:border-recipe-orange/65 hover:text-recipe-peel"
+            >
+              Close
+            </button>
+            <div className="overflow-hidden rounded-[30px] border border-white/12 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+              <RecipeImage
+                src={recipe.image_url}
+                alt={`${recipe.title} expanded view ${expandedGalleryIndex + 1}`}
+                className={`max-h-[82vh] w-full object-cover ${GALLERY_MOSAIC_TILES[expandedGalleryIndex].imageClassName}`}
+                loading="eager"
+              />
+            </div>
+          </div>
+        </div>
       ) : null}
     </article>
   );

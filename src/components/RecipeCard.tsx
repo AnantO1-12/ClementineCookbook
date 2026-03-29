@@ -15,7 +15,6 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
       to={`/recipes/${recipe.slug}`}
       className="group relative overflow-hidden rounded-[30px] border border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(255,244,231,0.92)_100%)] shadow-card transition duration-500 hover:-translate-y-1.5 hover:rotate-[0.25deg] hover:shadow-soft dark:border-recipe-clay/45 dark:bg-[linear-gradient(180deg,rgba(31,20,15,0.98)_0%,rgba(44,26,17,0.94)_100%)] dark:hover:border-recipe-orange/35"
     >
-      <div className="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-recipe-peel via-recipe-orange to-recipe-ember" />
       <div className="relative aspect-[16/10] overflow-hidden">
         <RecipeImage
           src={recipe.image_url}

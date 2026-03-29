@@ -207,30 +207,51 @@ export function RecipeDetailPage() {
             </p>
           </div>
 
-          <div className="grid gap-5 border-t border-white/8 pt-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/58 dark:text-recipe-peel/62">
+          <div className="grid gap-7 pt-2 sm:grid-cols-2 sm:gap-10">
+            <div className="relative space-y-3 pt-4">
+              <div className="absolute left-0 top-0 h-px w-28 bg-[linear-gradient(90deg,rgba(242,143,52,0.85),rgba(255,255,255,0.06))]" />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-recipe-ink/58 dark:text-recipe-peel/62">
                 Time
               </p>
-              <div className="space-y-2 text-sm text-recipe-ink/82 dark:text-recipe-sand/84">
-                <p className="inline-flex items-center gap-2">
-                  <ClockIcon className="h-4 w-4 text-recipe-orange dark:text-recipe-copper" />
-                  <span>{formatPrepCook(recipe)}</span>
-                </p>
-                <p className="pl-6 text-recipe-ink/68 dark:text-recipe-sand/70">{getTotalTime(recipe)} total</p>
+              <div className="flex items-end gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-recipe-orange/10 text-recipe-orange ring-1 ring-recipe-orange/25 dark:bg-recipe-copper/12 dark:text-recipe-copper dark:ring-recipe-copper/24">
+                  <ClockIcon className="h-[18px] w-[18px]" />
+                </span>
+                <div>
+                  <p className="font-display text-[2rem] leading-none text-recipe-ink dark:text-recipe-sand">
+                    {getTotalTime(recipe)}
+                  </p>
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-recipe-ink/48 dark:text-recipe-sand/46">
+                    Total time
+                  </p>
+                </div>
               </div>
+              <p className="text-sm leading-7 text-recipe-ink/72 dark:text-recipe-sand/72">
+                {formatPrepCook(recipe)}
+              </p>
             </div>
-            <div className="space-y-2 sm:border-l sm:border-white/8 sm:pl-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/58 dark:text-recipe-peel/62">
+
+            <div className="relative space-y-3 pt-4">
+              <div className="absolute left-0 top-0 h-px w-28 bg-[linear-gradient(90deg,rgba(242,143,52,0.85),rgba(255,255,255,0.06))]" />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-recipe-ink/58 dark:text-recipe-peel/62">
                 Servings
               </p>
-              <div className="space-y-2 text-sm text-recipe-ink/82 dark:text-recipe-sand/84">
-                <p className="inline-flex items-center gap-2">
-                  <BowlIcon className="h-4 w-4 text-recipe-orange dark:text-recipe-copper" />
-                  <span>{recipe.servings || 'Flexible'}</span>
-                </p>
-                <p className="pl-6 text-recipe-ink/68 dark:text-recipe-sand/70">{recipe.instructions.length} steps</p>
+              <div className="flex items-end gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-recipe-orange/10 text-recipe-orange ring-1 ring-recipe-orange/25 dark:bg-recipe-copper/12 dark:text-recipe-copper dark:ring-recipe-copper/24">
+                  <BowlIcon className="h-[18px] w-[18px]" />
+                </span>
+                <div>
+                  <p className="font-display text-[2rem] leading-none text-recipe-ink dark:text-recipe-sand">
+                    {recipe.servings || 'Flexible'}
+                  </p>
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-recipe-ink/48 dark:text-recipe-sand/46">
+                    {recipe.servings ? 'Servings' : 'Serving size'}
+                  </p>
+                </div>
               </div>
+              <p className="text-sm leading-7 text-recipe-ink/72 dark:text-recipe-sand/72">
+                {recipe.instructions.length} step{recipe.instructions.length === 1 ? '' : 's'} in the method
+              </p>
             </div>
           </div>
 

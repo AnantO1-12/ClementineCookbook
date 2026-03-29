@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
+import { Footer } from './Footer';
 import { Navbar } from './Navbar';
 
 export function Layout() {
@@ -24,6 +25,8 @@ export function Layout() {
       <main className="app-shell py-8 sm:py-10 xl:py-12">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }

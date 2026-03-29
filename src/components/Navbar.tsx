@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
-import { LoginIcon, LogoutIcon, PlusIcon } from './ui/Icons';
+import { LogoutIcon, PlusIcon } from './ui/Icons';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -109,12 +109,7 @@ export function Navbar() {
               <LogoutIcon className="h-4 w-4" />
               <span>{isSigningOut ? 'Signing out…' : 'Log out'}</span>
             </button>
-          ) : (
-            <NavLink to="/login" className={navGhost}>
-              <LoginIcon className="h-4 w-4" />
-              <span>Admin login</span>
-            </NavLink>
-          )}
+          ) : null}
         </nav>
       </div>
     </header>

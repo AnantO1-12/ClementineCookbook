@@ -2,14 +2,16 @@ interface CategoryFilterProps {
   categories: string[];
   selected: string;
   onSelect: (category: string) => void;
+  includeFavorites?: boolean;
 }
 
 export function CategoryFilter({
   categories,
   selected,
   onSelect,
+  includeFavorites = false,
 }: CategoryFilterProps) {
-  const options = ['All', ...categories];
+  const options = ['All', ...(includeFavorites ? ['Favorites'] : []), ...categories];
 
   return (
     <div className="scrollbar-none flex gap-2 overflow-x-auto pb-1">

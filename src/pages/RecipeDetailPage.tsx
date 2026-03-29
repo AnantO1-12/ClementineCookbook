@@ -202,14 +202,17 @@ export function RecipeDetailPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <div className="surface-panel px-5 py-6 sm:px-6">
+        <div className="surface-panel px-5 py-6 sm:px-6 dark:bg-[linear-gradient(160deg,rgba(39,22,15,0.98)_0%,rgba(49,27,17,0.96)_52%,rgba(70,34,19,0.9)_100%)]">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
             Ingredients
           </p>
           <ul className="mt-4 space-y-3">
             {recipe.ingredients.map((ingredient, index) => (
-              <li key={`${recipe.id}-ingredient-${index}`} className="flex gap-3 text-sm leading-7 text-recipe-ink/80 dark:text-recipe-sand/78">
-                <span className="mt-[0.8rem] h-2 w-2 rounded-full bg-recipe-orange" />
+              <li
+                key={`${recipe.id}-ingredient-${index}`}
+                className="flex gap-4 rounded-[24px] border border-white/45 bg-white/55 px-4 py-3 text-base leading-8 text-recipe-burnt shadow-sm dark:border-white/8 dark:bg-[#1a110d]/72 dark:text-[#fff2e2]"
+              >
+                <span className="mt-[0.85rem] h-2.5 w-2.5 rounded-full bg-recipe-orange shadow-[0_0_0_6px_rgba(242,143,52,0.14)]" />
                 <span>{ingredient}</span>
               </li>
             ))}

@@ -171,6 +171,12 @@ export async function toggleFavorite(id: string, isFavorite: boolean) {
     .single();
 
   if (error) {
+    if (error.message.toLowerCase().includes('row-level security')) {
+      throw new Error(
+        'Favorite updates are blocked by your current Supabase policy. Run the latest recipe policy migration in Supabase, then try again.',
+      );
+    }
+
     throw new Error(error.message);
   }
 

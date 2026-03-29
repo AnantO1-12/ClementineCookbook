@@ -24,10 +24,6 @@ export function Layout() {
       <main className="app-shell py-8 sm:py-10 xl:py-12">
         <Outlet />
       </main>
-
-      <footer className="app-shell pb-10 pt-6 text-sm text-recipe-burnt/70 dark:text-recipe-sand/50">
-        Built for a personal kitchen library with React, Vite, Supabase, and a little citrus.
-      </footer>
     </div>
   );
 }

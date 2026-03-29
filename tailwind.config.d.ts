@@ -79,6 +79,14 @@ declare const _default: {
                         transform: string;
                     };
                 };
+                'logo-spin': {
+                    '0%': {
+                        transform: string;
+                    };
+                    '100%': {
+                        transform: string;
+                    };
+                };
             };
             animation: {
                 float: string;
@@ -86,6 +94,7 @@ declare const _default: {
                 drift: string;
                 'drift-reverse': string;
                 'pulse-glow': string;
+                'logo-spin': string;
             };
         };
     };

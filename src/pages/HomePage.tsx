@@ -42,7 +42,11 @@ export function HomePage() {
 
       const matchesSearch = !normalizedSearch || haystack.includes(normalizedSearch);
       const matchesCategory =
-        selectedCategory === 'All' || recipe.category?.toLowerCase() === selectedCategory.toLowerCase();
+        selectedCategory === 'All'
+          ? true
+          : selectedCategory === 'Favorites'
+            ? recipe.is_favorite
+            : recipe.category?.toLowerCase() === selectedCategory.toLowerCase();
 
       return matchesSearch && matchesCategory;
     })
@@ -64,36 +68,15 @@ export function HomePage() {
         <div className="pointer-events-none absolute left-[42%] top-[58%] h-44 w-44 rounded-full bg-recipe-orange/15 blur-3xl animate-pulse-glow dark:bg-recipe-orange/18" />
         <div className="pointer-events-none absolute -right-12 top-12 h-64 w-64 rounded-full bg-recipe-marmalade/20 blur-3xl animate-drift-reverse dark:bg-recipe-copper/18" />
 
-        <div className="relative z-10 space-y-8 xl:pr-8">
-          <div className="flex items-center gap-4 animate-rise">
-            <img
-              src="/clementine-slice-logo.png"
-              alt="Clementine orange slice logo"
-              className="citrus-logo h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20"
-            />
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-recipe-burnt dark:text-recipe-peel">
-                Clementine notebook
-              </p>
-              <p className="text-sm leading-6 text-recipe-burnt/75 dark:text-recipe-sand/72">
-                A softer rhythm for recipes you actually make.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4 animate-rise" style={{ animationDelay: '90ms' }}>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-recipe-orange">
-              Your kitchen notebook
+        <div className="relative z-10 space-y-6 xl:pr-8">
+          <div className="animate-rise space-y-3" style={{ animationDelay: '90ms' }}>
+            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-recipe-burnt dark:text-recipe-peel">
+              Search the cookbook
             </p>
-            <h1 className="max-w-3xl font-display text-4xl leading-[0.96] text-recipe-ink dark:text-recipe-sand sm:text-5xl xl:text-[4.25rem] 2xl:text-[4.9rem]">
-              A calm, citrus-toned home for every recipe you actually cook.
-            </h1>
-            <p className="max-w-2xl text-base leading-8 text-recipe-ink/70 dark:text-recipe-sand/70 xl:text-lg">
-              Browse favorites, search by category or cuisine, and keep your personal cookbook
-              polished enough to feel special every time you open it.
+            <p className="max-w-xl text-sm leading-7 text-recipe-burnt/78 dark:text-recipe-sand/72">
+              Find recipes fast, then narrow the shelf by category or favorites.
             </p>
           </div>
-
           <SearchBar
             value={searchValue}
             onChange={(nextValue) => {
@@ -102,51 +85,88 @@ export function HomePage() {
               });
             }}
             isPending={isPending}
+            size="hero"
           />
 
-          <div className="flex flex-wrap gap-3 animate-rise" style={{ animationDelay: '160ms' }}>
-            <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
-                Recipes
-              </p>
-              <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
-                {recipes.length}
-              </p>
-            </div>
-            <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
-                Categories
-              </p>
-              <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
-                {categories.length}
-              </p>
-            </div>
-            <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
-                Favorites
-              </p>
-              <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
-                {favoriteCount}
-              </p>
-            </div>
-          </div>
+          <section className="flow-band animate-rise space-y-5" style={{ animationDelay: '180ms' }}>
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
+                  Explore the shelf
+                </p>
+                <CategoryFilter
+                  categories={categories}
+                  selected={selectedCategory}
+                  includeFavorites
+                  onSelect={(category) => {
+                    startTransition(() => {
+                      setSelectedCategory(category);
+                    });
+                  }}
+                />
+              </div>
 
-          <div className="flex flex-wrap gap-3 animate-rise" style={{ animationDelay: '220ms' }}>
-            <Link to={featuredRecipe ? `/recipes/${featuredRecipe.slug}` : '/'} className="btn-primary">
-              <span>{featuredRecipe ? 'Open featured recipe' : 'Start browsing'}</span>
-              <ArrowRightIcon className="h-4 w-4" />
-            </Link>
-            {isAuthenticated ? (
-              <Link to="/recipes/new" className="btn-secondary">
-                <PlusIcon className="h-4 w-4" />
-                <span>Add recipe</span>
+              <label className="flex flex-col gap-2 text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
+                Sort recipes
+                <select
+                  value={sortBy}
+                  onChange={(event) => {
+                    startTransition(() => {
+                      setSortBy(event.target.value as RecipeSort);
+                    });
+                  }}
+                  className="field-input min-w-[220px]"
+                >
+                  <option value="newest">Newest first</option>
+                  <option value="alphabetical">Alphabetical</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
+                  Recipes
+                </p>
+                <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                  {recipes.length}
+                </p>
+              </div>
+              <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
+                  Categories
+                </p>
+                <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                  {categories.length}
+                </p>
+              </div>
+              <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
+                  Favorites
+                </p>
+                <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                  {favoriteCount}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Link to={featuredRecipe ? `/recipes/${featuredRecipe.slug}` : '/'} className="btn-primary">
+                <span>{featuredRecipe ? 'Open featured recipe' : 'Start browsing'}</span>
+                <ArrowRightIcon className="h-4 w-4" />
               </Link>
-            ) : (
-              <Link to="/login" className="btn-secondary">
-                <span>Admin login</span>
-              </Link>
-            )}
-          </div>
+              {isAuthenticated ? (
+                <Link to="/recipes/new" className="btn-secondary">
+                  <PlusIcon className="h-4 w-4" />
+                  <span>Add recipe</span>
+                </Link>
+              ) : (
+                <Link to="/login" className="btn-secondary">
+                  <span>Admin login</span>
+                </Link>
+              )}
+            </div>
+          </section>
         </div>
 
         <div className="relative z-10 mt-8 overflow-hidden rounded-[38px] border border-white/50 bg-white/12 shadow-[0_24px_50px_rgba(89,42,16,0.18)] backdrop-blur-xl dark:border-recipe-clay/45 dark:bg-[#1d120d]/25 lg:mt-0 lg:-mr-3 xl:-mr-5 animate-rise" style={{ animationDelay: '140ms' }}>
@@ -195,41 +215,6 @@ export function HomePage() {
       </section>
 
       {error ? <ErrorState message={error} onRetry={refresh} /> : null}
-
-      <section className="flow-band animate-rise" style={{ animationDelay: '180ms' }}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
-              Explore the shelf
-            </p>
-            <CategoryFilter
-              categories={categories}
-              selected={selectedCategory}
-              onSelect={(category) => {
-                startTransition(() => {
-                  setSelectedCategory(category);
-                });
-              }}
-            />
-          </div>
-
-          <label className="flex flex-col gap-2 text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
-            Sort recipes
-            <select
-              value={sortBy}
-              onChange={(event) => {
-                startTransition(() => {
-                  setSortBy(event.target.value as RecipeSort);
-                });
-              }}
-              className="field-input min-w-[220px]"
-            >
-              <option value="newest">Newest first</option>
-              <option value="alphabetical">Alphabetical</option>
-            </select>
-          </label>
-        </div>
-      </section>
 
       <section className="space-y-5">
         <div className="flex items-center justify-between gap-4">

@@ -72,7 +72,7 @@ export function Navbar() {
               <img
                 src="/clementine-slice-logo.png"
                 alt="Clementine orange slice logo"
-                className="citrus-logo h-12 w-12 animate-float object-contain"
+                className="citrus-logo h-12 w-12 animate-logo-spin object-contain"
               />
             </span>
             <div>

@@ -58,6 +58,10 @@ export default {
           '0%, 100%': { opacity: '0.55', transform: 'scale(1)' },
           '50%': { opacity: '0.95', transform: 'scale(1.06)' },
         },
+        'logo-spin': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         float: 'float 8s ease-in-out infinite',
@@ -65,6 +69,7 @@ export default {
         drift: 'drift 18s ease-in-out infinite',
         'drift-reverse': 'drift-reverse 20s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 7s ease-in-out infinite',
+        'logo-spin': 'logo-spin 24s linear infinite',
       },
     },
   },

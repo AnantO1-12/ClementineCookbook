@@ -13,16 +13,17 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
   return (
     <Link
       to={`/recipes/${recipe.slug}`}
-      className="group overflow-hidden rounded-[30px] border border-white/70 bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-soft dark:border-recipe-clay/45 dark:bg-[#1e1510] dark:hover:border-recipe-orange/35"
+      className="group relative overflow-hidden rounded-[34px] border border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(255,244,231,0.92)_100%)] shadow-card transition duration-500 hover:-translate-y-2 hover:rotate-[0.35deg] hover:shadow-soft dark:border-recipe-clay/45 dark:bg-[linear-gradient(180deg,rgba(31,20,15,0.98)_0%,rgba(44,26,17,0.94)_100%)] dark:hover:border-recipe-orange/35"
     >
+      <div className="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-recipe-peel via-recipe-orange to-recipe-ember" />
       <div className="relative aspect-[4/3] overflow-hidden">
         <RecipeImage
           src={recipe.image_url}
           alt={recipe.title}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/0 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/58 via-black/0 to-transparent" />
 
         <div className="absolute left-4 top-4 flex flex-wrap gap-2">
           {recipe.category ? <span className="glass-chip">{sentenceCase(recipe.category)}</span> : null}

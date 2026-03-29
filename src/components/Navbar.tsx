@@ -28,6 +28,12 @@ export function Navbar() {
   const { showToast } = useToast();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() => getInitialTheme());
+  const navPillBase =
+    'inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition duration-300';
+  const navPillInactive = `${navPillBase} border-white/12 bg-white/10 text-[#ffe9d4] hover:-translate-y-0.5 hover:bg-white/16 hover:text-white`;
+  const navPillActive = `${navPillBase} border-[#ffd5a8]/30 bg-[#ffc176] text-[#512109] shadow-[0_12px_28px_rgba(53,20,7,0.22)]`;
+  const navGhost =
+    'inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-[#ffe9d4]/80 transition duration-300 hover:bg-white/10 hover:text-white';
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -57,31 +63,23 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/50 bg-recipe-cream/80 backdrop-blur-xl transition-colors duration-300 dark:border-recipe-clay/40 dark:bg-recipe-night/72">
-      <div className="app-shell flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <header className="sticky top-0 z-40 border-b border-black/10 bg-gradient-to-r from-recipe-burnt via-recipe-rust to-[#7b3517] text-[#fff4ea] shadow-[0_18px_42px_rgba(83,32,10,0.28)] backdrop-blur-xl">
+      <div className="absolute inset-x-0 top-0 h-px bg-white/25" />
+      <div className="app-shell relative flex flex-col gap-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <NavLink to="/" className="inline-flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-recipe-orange text-white shadow-soft">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 12h16" />
-                <path d="M7 12a5 5 0 1 0 10 0" />
-                <path d="M8.5 8.5h7" />
-              </svg>
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/14">
+              <img
+                src="/clementine-slice-logo.png"
+                alt="Clementine orange slice logo"
+                className="citrus-logo h-12 w-12 animate-float object-contain"
+              />
             </span>
             <div>
-              <p className="font-display text-2xl leading-none text-recipe-ink dark:text-recipe-sand">
+              <p className="font-display text-3xl leading-none text-[#fff5eb]">
                 Clementine
               </p>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-ink/55 dark:text-recipe-sand/55">
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#ffe6cc]/65">
                 Personal cookbook
               </p>
             </div>
@@ -91,7 +89,7 @@ export function Navbar() {
         <nav className="flex flex-wrap items-center gap-2 sm:justify-end">
           <NavLink
             to="/"
-            className={({ isActive }) => (isActive ? 'pill-active' : 'pill-button')}
+            className={({ isActive }) => (isActive ? navPillActive : navPillInactive)}
           >
             Recipes
           </NavLink>
@@ -99,7 +97,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'))}
-            className="pill-button gap-2"
+            className={navPillInactive}
             aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
             {theme === 'dark' ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
@@ -109,7 +107,7 @@ export function Navbar() {
           {isAuthenticated ? (
             <NavLink
               to="/recipes/new"
-              className={({ isActive }) => (isActive ? 'btn-primary' : 'btn-secondary')}
+              className={({ isActive }) => (isActive ? navPillActive : navPillInactive)}
             >
               <PlusIcon className="h-4 w-4" />
               <span>Add recipe</span>
@@ -117,19 +115,19 @@ export function Navbar() {
           ) : null}
 
           {loading ? (
-            <span className="pill-button opacity-75">Checking session…</span>
+            <span className={`${navPillInactive} opacity-75`}>Checking session…</span>
           ) : isAuthenticated ? (
             <button
               type="button"
               onClick={handleSignOut}
               disabled={isSigningOut}
-              className="btn-ghost"
+              className={navGhost}
             >
               <LogoutIcon className="h-4 w-4" />
               <span>{isSigningOut ? 'Signing out…' : 'Log out'}</span>
             </button>
           ) : (
-            <NavLink to="/login" className="btn-ghost">
+            <NavLink to="/login" className={navGhost}>
               <LoginIcon className="h-4 w-4" />
               <span>Admin login</span>
             </NavLink>

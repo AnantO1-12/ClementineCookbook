@@ -16,16 +16,19 @@
 
   body {
     @apply min-h-screen bg-recipe-cream font-sans text-recipe-ink antialiased transition-colors duration-300;
-    background-image: linear-gradient(180deg, #fffbf7 0%, #fff7ef 36%, #feecd8 100%);
+    background-image:
+      radial-gradient(circle at 12% 4%, rgba(255, 203, 140, 0.5), transparent 0 18%),
+      radial-gradient(circle at 88% 12%, rgba(255, 157, 51, 0.18), transparent 0 18%),
+      linear-gradient(180deg, #fffbf7 0%, #fff4e6 34%, #ffe7c9 100%);
   }
 
   html.dark body {
     @apply bg-recipe-night text-recipe-sand;
     background-image:
-      radial-gradient(circle at 12% 18%, rgba(255, 180, 98, 0.16), transparent 0 24%),
-      radial-gradient(circle at 82% 14%, rgba(242, 143, 52, 0.14), transparent 0 22%),
-      radial-gradient(circle at 76% 74%, rgba(203, 93, 25, 0.18), transparent 0 26%),
-      linear-gradient(180deg, #1a0f0b 0%, #160d0a 38%, #110907 100%);
+      radial-gradient(circle at 14% 10%, rgba(255, 180, 98, 0.2), transparent 0 22%),
+      radial-gradient(circle at 85% 14%, rgba(255, 157, 51, 0.18), transparent 0 22%),
+      radial-gradient(circle at 78% 76%, rgba(203, 93, 25, 0.2), transparent 0 28%),
+      linear-gradient(180deg, #1a0f0b 0%, #170d09 32%, #120806 100%);
   }
 
   a {
@@ -51,16 +54,45 @@
 @layer components {
   .app-shell {
     @apply mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-12 2xl:px-14;
-    max-width: 1540px;
+    max-width: 1660px;
   }
 
   .surface-panel {
-    @apply rounded-[34px] border border-white/70 bg-white/85 shadow-soft backdrop-blur-sm transition-colors duration-300;
+    @apply relative overflow-hidden rounded-[38px] border border-white/60 shadow-soft backdrop-blur-sm transition-all duration-500;
+    background:
+      radial-gradient(circle at top left, rgba(255, 199, 137, 0.34), transparent 0 28%),
+      linear-gradient(165deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 247, 239, 0.9) 46%, rgba(255, 235, 209, 0.78) 100%);
+  }
+
+  .surface-panel::before {
+    content: '';
+    position: absolute;
+    inset: auto -12% 46% 42%;
+    height: 14rem;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.8;
+    filter: blur(14px);
+    background: radial-gradient(circle, rgba(255, 179, 102, 0.26), transparent 70%);
+    transform: rotate(-9deg);
+  }
+
+  .surface-panel > * {
+    position: relative;
+    z-index: 1;
   }
 
   html.dark .surface-panel {
-    @apply border-recipe-clay/50 bg-recipe-dusk/85;
+    @apply border-recipe-clay/40;
+    background:
+      radial-gradient(circle at top left, rgba(255, 180, 98, 0.16), transparent 0 30%),
+      linear-gradient(165deg, rgba(39, 22, 15, 0.95) 0%, rgba(43, 25, 17, 0.93) 48%, rgba(71, 31, 17, 0.88) 100%);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+  }
+
+  html.dark .surface-panel::before {
+    background: radial-gradient(circle, rgba(255, 157, 51, 0.22), transparent 70%);
+    opacity: 0.85;
   }
 
   .field-label {
@@ -92,20 +124,20 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-full bg-recipe-orange px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
+    @apply inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-recipe-marmalade via-recipe-orange to-recipe-ember px-5 py-3 text-sm font-semibold text-white shadow-soft transition duration-300 hover:-translate-y-0.5 hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
   }
 
   html.dark .btn-primary {
-    @apply shadow-none hover:bg-recipe-copper;
-    box-shadow: 0 18px 36px rgba(242, 143, 52, 0.18);
+    @apply shadow-none hover:brightness-110;
+    box-shadow: 0 18px 36px rgba(242, 143, 52, 0.2);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 rounded-full border border-recipe-creamDeep bg-white px-5 py-3 text-sm font-semibold text-recipe-ink transition hover:-translate-y-0.5 hover:border-recipe-orange/60 hover:text-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
+    @apply inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-5 py-3 text-sm font-semibold text-recipe-ink transition duration-300 hover:-translate-y-0.5 hover:border-recipe-orange/60 hover:text-recipe-ember disabled:cursor-not-allowed disabled:opacity-70 disabled:transform-none;
   }
 
   html.dark .btn-secondary {
-    @apply border-recipe-clay/70 bg-[#2a1b15] text-recipe-sand hover:border-recipe-orange/60 hover:text-recipe-copper;
+    @apply border-recipe-clay/60 bg-[#2a1b15] text-recipe-sand hover:border-recipe-orange/60 hover:text-recipe-copper;
   }
 
   .btn-ghost {
@@ -117,7 +149,7 @@
   }
 
   .pill-button {
-    @apply inline-flex shrink-0 items-center rounded-full border border-recipe-creamDeep bg-white px-4 py-2 text-sm font-semibold text-recipe-ink/75 transition hover:border-recipe-orange/50 hover:text-recipe-ember;
+    @apply inline-flex shrink-0 items-center rounded-full border border-white/70 bg-white/75 px-4 py-2 text-sm font-semibold text-recipe-ink/75 transition duration-300 hover:border-recipe-orange/50 hover:text-recipe-ember;
   }
 
   html.dark .pill-button {
@@ -125,7 +157,7 @@
   }
 
   .pill-active {
-    @apply inline-flex shrink-0 items-center rounded-full bg-recipe-orange px-4 py-2 text-sm font-semibold text-white shadow-sm;
+    @apply inline-flex shrink-0 items-center rounded-full bg-gradient-to-r from-recipe-marmalade to-recipe-ember px-4 py-2 text-sm font-semibold text-white shadow-sm;
   }
 
   html.dark .pill-active {
@@ -145,7 +177,7 @@
   }
 
   html.dark .glass-chip {
-    @apply border border-white/10 bg-[#1a110d]/85 text-recipe-sand shadow-none;
+    @apply border border-white/10 bg-[#1a110d] text-recipe-sand shadow-none;
   }
 
   .truncate-2 {
@@ -162,5 +194,35 @@
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+
+  .flow-band {
+    @apply relative overflow-hidden rounded-[34px] border border-white/60 px-5 py-5 shadow-soft backdrop-blur-xl transition-all duration-500 sm:px-6 xl:px-8;
+    background:
+      linear-gradient(90deg, rgba(255, 248, 240, 0.84) 0%, rgba(255, 237, 212, 0.76) 40%, rgba(255, 225, 190, 0.78) 100%);
+  }
+
+  .flow-band::before {
+    content: '';
+    position: absolute;
+    inset: auto -14% 58% 20%;
+    height: 12rem;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255, 161, 68, 0.22), transparent 68%);
+    filter: blur(14px);
+  }
+
+  html.dark .flow-band {
+    @apply border-recipe-clay/40;
+    background:
+      linear-gradient(90deg, rgba(32, 18, 13, 0.92) 0%, rgba(51, 26, 16, 0.9) 42%, rgba(96, 42, 18, 0.82) 100%);
+  }
+
+  html.dark .flow-band::before {
+    background: radial-gradient(circle, rgba(255, 157, 51, 0.26), transparent 68%);
+  }
+
+  .citrus-logo {
+    filter: drop-shadow(0 16px 28px rgba(126, 50, 16, 0.22));
   }
 }

@@ -8,8 +8,8 @@ interface SearchBarProps {
 
 export function SearchBar({ value, onChange, isPending = false }: SearchBarProps) {
   return (
-    <label className="surface-panel flex items-center gap-3 px-4 py-3">
-      <SearchIcon className="h-5 w-5 text-recipe-ink/45 dark:text-recipe-sand/45" />
+    <label className="flex items-center gap-3 rounded-full border border-white/70 bg-white/76 px-5 py-4 shadow-[0_18px_36px_rgba(168,98,35,0.12)] backdrop-blur-xl transition duration-300 dark:border-white/10 dark:bg-[#1b120e]/72 dark:shadow-none">
+      <SearchIcon className="h-5 w-5 text-recipe-burnt/60 dark:text-recipe-peel/75" />
       <input
         type="search"
         value={value}
@@ -19,7 +19,7 @@ export function SearchBar({ value, onChange, isPending = false }: SearchBarProps
         aria-label="Search recipes"
       />
       {isPending ? (
-        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-recipe-orange">
+        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-recipe-burnt dark:text-recipe-peel">
           Refining
         </span>
       ) : null}

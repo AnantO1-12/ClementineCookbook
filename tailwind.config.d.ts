@@ -17,6 +17,10 @@ declare const _default: {
                     clay: string;
                     dusk: string;
                     night: string;
+                    burnt: string;
+                    rust: string;
+                    peel: string;
+                    marmalade: string;
                 };
             };
             fontFamily: {
@@ -49,10 +53,39 @@ declare const _default: {
                         transform: string;
                     };
                 };
+                drift: {
+                    '0%, 100%': {
+                        transform: string;
+                    };
+                    '50%': {
+                        transform: string;
+                    };
+                };
+                'drift-reverse': {
+                    '0%, 100%': {
+                        transform: string;
+                    };
+                    '50%': {
+                        transform: string;
+                    };
+                };
+                'pulse-glow': {
+                    '0%, 100%': {
+                        opacity: string;
+                        transform: string;
+                    };
+                    '50%': {
+                        opacity: string;
+                        transform: string;
+                    };
+                };
             };
             animation: {
                 float: string;
                 rise: string;
+                drift: string;
+                'drift-reverse': string;
+                'pulse-glow': string;
             };
         };
     };

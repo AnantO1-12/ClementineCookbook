@@ -103,7 +103,7 @@ export function HomePage() {
             size="hero"
           />
 
-          <section className="flow-band animate-rise space-y-5" style={{ animationDelay: '220ms' }}>
+          <section className="animate-rise space-y-5 pt-1" style={{ animationDelay: '220ms' }}>
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
                 Explore the shelf
@@ -121,27 +121,27 @@ export function HomePage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
+              <div className="min-w-[116px] rounded-[32px] border border-white/45 bg-white/18 px-4 py-2.5 shadow-sm backdrop-blur-md dark:border-recipe-clay/35 dark:bg-[#20130e]/32">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-recipe-ink/45 dark:text-recipe-sand/45">
                   Recipes
                 </p>
-                <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                <p className="mt-1 font-display text-[2.15rem] leading-none text-recipe-ink dark:text-recipe-sand">
                   {recipes.length}
                 </p>
               </div>
-              <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
+              <div className="min-w-[116px] rounded-[32px] border border-white/45 bg-white/18 px-4 py-2.5 shadow-sm backdrop-blur-md dark:border-recipe-clay/35 dark:bg-[#20130e]/32">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-recipe-ink/45 dark:text-recipe-sand/45">
                   Categories
                 </p>
-                <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                <p className="mt-1 font-display text-[2.15rem] leading-none text-recipe-ink dark:text-recipe-sand">
                   {categories.length}
                 </p>
               </div>
-              <div className="min-w-[140px] rounded-full border border-white/65 bg-white/62 px-5 py-3 shadow-sm backdrop-blur dark:border-recipe-clay/45 dark:bg-[#20130e]/62">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-recipe-ink/45 dark:text-recipe-sand/45">
+              <div className="min-w-[116px] rounded-[32px] border border-white/45 bg-white/18 px-4 py-2.5 shadow-sm backdrop-blur-md dark:border-recipe-clay/35 dark:bg-[#20130e]/32">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-recipe-ink/45 dark:text-recipe-sand/45">
                   Favorites
                 </p>
-                <p className="mt-1 font-display text-3xl text-recipe-ink dark:text-recipe-sand">
+                <p className="mt-1 font-display text-[2.15rem] leading-none text-recipe-ink dark:text-recipe-sand">
                   {favoriteCount}
                 </p>
               </div>
@@ -157,11 +157,7 @@ export function HomePage() {
                   <PlusIcon className="h-4 w-4" />
                   <span>Add recipe</span>
                 </Link>
-              ) : (
-                <Link to="/login" className="btn-secondary">
-                  <span>Admin login</span>
-                </Link>
-              )}
+              ) : null}
             </div>
           </section>
         </div>

@@ -226,3 +226,51 @@
     filter: drop-shadow(0 16px 28px rgba(126, 50, 16, 0.22));
   }
 }
+
+@layer utilities {
+  @keyframes search-sheen {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(520%);
+    }
+  }
+
+  @keyframes search-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-1.5px);
+    }
+  }
+
+  @keyframes search-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(0.92);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-search-sheen {
+    animation: search-sheen 2.9s ease-in-out infinite;
+  }
+
+  .animate-search-bob {
+    animation: search-bob 2s ease-in-out infinite;
+  }
+
+  .animate-search-pulse {
+    animation: search-pulse 1.4s ease-in-out infinite;
+  }
+}

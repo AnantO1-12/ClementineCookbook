@@ -207,18 +207,18 @@ export function RecipeDetailPage() {
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+      <section className="grid gap-6 xl:grid-cols-[0.78fr_1.22fr]">
         <div className="surface-panel px-5 py-6 sm:px-6 dark:bg-[linear-gradient(160deg,rgba(39,22,15,0.98)_0%,rgba(49,27,17,0.96)_52%,rgba(70,34,19,0.9)_100%)]">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
             Ingredients
           </p>
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 space-y-4">
             {recipe.ingredients.map((ingredient, index) => (
               <li
                 key={`${recipe.id}-ingredient-${index}`}
-                className="flex gap-4 rounded-[24px] border border-white/45 bg-white/55 px-4 py-3 text-base leading-8 text-recipe-burnt shadow-sm dark:border-white/8 dark:bg-[#1a110d]/72 dark:text-[#fff2e2]"
+                className="flex gap-4 text-base leading-8 text-recipe-burnt dark:text-[#fff2e2]"
               >
-                <span className="mt-[0.85rem] h-2.5 w-2.5 rounded-full bg-recipe-orange shadow-[0_0_0_6px_rgba(242,143,52,0.14)]" />
+                <span className="mt-[0.9rem] h-2.5 w-2.5 rounded-full bg-recipe-orange shadow-[0_0_0_6px_rgba(242,143,52,0.14)]" />
                 <span>{ingredient}</span>
               </li>
             ))}
@@ -229,11 +229,11 @@ export function RecipeDetailPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
             Instructions
           </p>
-          <ol className="mt-4 space-y-4">
+          <ol className="mt-4 space-y-5">
             {recipe.instructions.map((instruction, index) => (
-              <li key={`${recipe.id}-instruction-${index}`} className="rounded-[26px] bg-recipe-cream px-4 py-4 dark:bg-[#2a1b15]">
+              <li key={`${recipe.id}-instruction-${index}`} className="border-b border-white/8 pb-5 last:border-b-0 last:pb-0">
                 <div className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white font-display text-xl text-recipe-ember shadow-sm dark:bg-[#1c130e] dark:text-recipe-copper dark:shadow-none">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/6 font-display text-xl text-recipe-ember shadow-sm dark:border-white/8 dark:bg-[#1c130e]/45 dark:text-recipe-copper dark:shadow-none">
                     {index + 1}
                   </span>
                   <p className="pt-1 text-sm leading-7 text-recipe-ink/78 dark:text-recipe-sand/76">{instruction}</p>

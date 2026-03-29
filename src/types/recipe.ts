@@ -19,6 +19,7 @@ export interface Recipe {
   instructions: string[];
   notes: string | null;
   image_url: string | null;
+  image_urls: string[];
   is_favorite: boolean;
 }
 
@@ -34,6 +35,7 @@ export interface RecipeFormValues {
   instructions: string[];
   notes: string;
   image_url: string;
+  image_urls: string[];
   is_favorite: boolean;
 }
 
@@ -49,6 +51,7 @@ export interface RecipeMutationInput {
   instructions: string[];
   notes: string | null;
   image_url: string | null;
+  image_urls: string[];
   is_favorite: boolean;
 }
 

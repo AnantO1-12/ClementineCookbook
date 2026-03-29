@@ -36,6 +36,12 @@ export function RecipeDetailPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [expandedGalleryIndex, setExpandedGalleryIndex] = useState<number | null>(null);
+  const galleryImageUrls =
+    recipe?.image_urls.length
+      ? recipe.image_urls
+      : recipe?.image_url
+        ? [recipe.image_url]
+        : [];
 
   useEffect(() => {
     const loadRecipe = async () => {
@@ -59,9 +65,9 @@ export function RecipeDetailPage() {
       } catch (fetchError) {
         setError(fetchError instanceof Error ? fetchError.message : 'Unable to load this recipe.');
       } finally {
-      setLoading(false);
-    }
-  };
+        setLoading(false);
+      }
+    };
 
     void loadRecipe();
   }, [slug]);
@@ -83,6 +89,16 @@ export function RecipeDetailPage() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [expandedGalleryIndex]);
+
+  useEffect(() => {
+    if (expandedGalleryIndex === null) {
+      return;
+    }
+
+    if (!galleryImageUrls[expandedGalleryIndex]) {
+      setExpandedGalleryIndex(null);
+    }
+  }, [expandedGalleryIndex, galleryImageUrls]);
 
   const handleDelete = async () => {
     if (!recipe) {
@@ -287,32 +303,36 @@ export function RecipeDetailPage() {
         </section>
       ) : null}
 
-      {recipe.image_url ? (
+      {galleryImageUrls.length ? (
         <section className="relative mx-auto max-w-[1460px] pt-2">
           <div className="pointer-events-none absolute left-[12%] top-[22%] -z-10 h-52 w-52 rounded-full bg-recipe-orange/10 blur-3xl" />
           <div className="grid grid-cols-2 auto-rows-[120px] gap-2 sm:auto-rows-[150px] sm:gap-3 lg:grid-cols-4 xl:grid-cols-6 xl:auto-rows-[120px]">
-            {GALLERY_MOSAIC_TILES.map((tile, index) => (
-              <button
-                key={tile.id}
-                type="button"
-                onClick={() => setExpandedGalleryIndex(index)}
-                className={`group relative overflow-hidden rounded-[24px] bg-[#1b100b]/20 ring-1 ring-white/8 transition duration-300 hover:ring-2 hover:ring-recipe-orange/75 hover:shadow-[0_0_0_1px_rgba(242,143,52,0.34),0_20px_40px_rgba(242,143,52,0.2)] ${tile.frameClass}`}
-                aria-label={`Expand recipe image ${index + 1}`}
-              >
-                <RecipeImage
-                  src={recipe.image_url}
-                  alt={`${recipe.title} mosaic view ${index + 1}`}
-                  className={`h-full w-full object-cover transition duration-700 group-hover:scale-[1.07] ${tile.imageClassName}`}
-                  loading="lazy"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),transparent_40%,rgba(17,10,7,0.22))] opacity-80 transition duration-300 group-hover:opacity-50" />
-              </button>
-            ))}
+            {galleryImageUrls.map((imageUrl, index) => {
+              const tile = GALLERY_MOSAIC_TILES[index % GALLERY_MOSAIC_TILES.length];
+
+              return (
+                <button
+                  key={`${tile.id}-${index}`}
+                  type="button"
+                  onClick={() => setExpandedGalleryIndex(index)}
+                  className={`group relative overflow-hidden rounded-[24px] bg-[#1b100b]/20 ring-1 ring-white/8 transition duration-300 hover:ring-2 hover:ring-recipe-orange/75 hover:shadow-[0_0_0_1px_rgba(242,143,52,0.34),0_20px_40px_rgba(242,143,52,0.2)] ${tile.frameClass}`}
+                  aria-label={`Expand recipe image ${index + 1}`}
+                >
+                  <RecipeImage
+                    src={imageUrl}
+                    alt={`${recipe.title} mosaic view ${index + 1}`}
+                    className={`h-full w-full object-cover transition duration-700 group-hover:scale-[1.07] ${tile.imageClassName}`}
+                    loading="lazy"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),transparent_40%,rgba(17,10,7,0.22))] opacity-80 transition duration-300 group-hover:opacity-50" />
+                </button>
+              );
+            })}
           </div>
         </section>
       ) : null}
 
-      {recipe.image_url && expandedGalleryIndex !== null ? (
+      {galleryImageUrls.length && expandedGalleryIndex !== null ? (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(16,8,5,0.86)] px-4 py-6 backdrop-blur-md"
           onClick={() => setExpandedGalleryIndex(null)}
@@ -330,9 +350,11 @@ export function RecipeDetailPage() {
             </button>
             <div className="overflow-hidden rounded-[30px] border border-white/12 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
               <RecipeImage
-                src={recipe.image_url}
+                src={galleryImageUrls[expandedGalleryIndex]}
                 alt={`${recipe.title} expanded view ${expandedGalleryIndex + 1}`}
-                className={`max-h-[82vh] w-full object-cover ${GALLERY_MOSAIC_TILES[expandedGalleryIndex].imageClassName}`}
+                className={`max-h-[82vh] w-full object-cover ${
+                  GALLERY_MOSAIC_TILES[expandedGalleryIndex % GALLERY_MOSAIC_TILES.length].imageClassName
+                }`}
                 loading="eager"
               />
             </div>

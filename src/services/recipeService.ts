@@ -15,10 +15,22 @@ function toStringArray(value: Json): string[] {
 }
 
 function normalizeRecipe(record: RecipeRecord): Recipe {
+  const imageUrls = Array.from(
+    new Set(
+      [...toStringArray(record.image_urls), cleanNullableString(record.image_url)]
+        .filter((value): value is string => Boolean(value)),
+    ),
+  );
+  const thumbnailImageUrl = cleanNullableString(record.image_url) ?? imageUrls[0] ?? null;
+
   return {
     ...record,
     ingredients: toStringArray(record.ingredients),
     instructions: toStringArray(record.instructions),
+    image_url: thumbnailImageUrl,
+    image_urls: thumbnailImageUrl
+      ? [thumbnailImageUrl, ...imageUrls.filter((value) => value !== thumbnailImageUrl)]
+      : imageUrls,
   };
 }
 
@@ -26,6 +38,34 @@ function cleanNullableString(value: string | null) {
   const nextValue = value?.trim();
 
   return nextValue ? nextValue : null;
+}
+
+function cleanStringArray(values: string[]) {
+  return Array.from(
+    new Set(values.map((value) => value.trim()).filter(Boolean)),
+  );
+}
+
+function buildImagePayload(input: Pick<RecipeMutationInput, 'image_url' | 'image_urls'>) {
+  const imageUrls = cleanStringArray(input.image_urls);
+  const thumbnailImageUrl = cleanNullableString(input.image_url) ?? imageUrls[0] ?? null;
+
+  return {
+    image_url: thumbnailImageUrl,
+    image_urls: thumbnailImageUrl
+      ? [thumbnailImageUrl, ...imageUrls.filter((value) => value !== thumbnailImageUrl)]
+      : imageUrls,
+  };
+}
+
+function getRecipeMutationErrorMessage(message: string) {
+  const normalizedMessage = message.toLowerCase();
+
+  if (normalizedMessage.includes('image_urls')) {
+    return 'Your database is missing recipe gallery support. Run `supabase/migrations/004_add_recipe_image_gallery.sql` in the Supabase SQL Editor, then try again.';
+  }
+
+  return message;
 }
 
 async function buildUniqueSlug(title: string, excludeId?: string) {
@@ -74,7 +114,7 @@ function buildRecipePayload(input: RecipeMutationInput, slug: string) {
     ingredients: input.ingredients,
     instructions: input.instructions,
     notes: cleanNullableString(input.notes),
-    image_url: cleanNullableString(input.image_url),
+    ...buildImagePayload(input),
     is_favorite: input.is_favorite,
   };
 }
@@ -87,7 +127,7 @@ export async function getAllRecipes() {
   });
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(getRecipeMutationErrorMessage(error.message));
   }
 
   return (data ?? []).map(normalizeRecipe);
@@ -103,7 +143,7 @@ export async function getRecipeBySlug(slug: string) {
     .maybeSingle();
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(getRecipeMutationErrorMessage(error.message));
   }
 
   return data ? normalizeRecipe(data) : null;
@@ -125,7 +165,7 @@ export async function createRecipe(input: RecipeMutationInput, userId: string) {
     .single();
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(getRecipeMutationErrorMessage(error.message));
   }
 
   return normalizeRecipe(data);
@@ -144,7 +184,7 @@ export async function updateRecipe(id: string, input: RecipeMutationInput) {
     .single();
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(getRecipeMutationErrorMessage(error.message));
   }
 
   return normalizeRecipe(data);
@@ -187,7 +227,11 @@ export async function uploadRecipeImage(file: File, userId: string, title: strin
   assertSupabaseEnv();
 
   const extension = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-  const filePath = `${userId}/${Date.now()}-${slugify(title)}.${extension}`;
+  const uniqueId =
+    typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const filePath = `${userId}/${uniqueId}-${slugify(title)}.${extension}`;
 
   const { error } = await supabase.storage.from(IMAGE_BUCKET).upload(filePath, file, {
     cacheControl: '3600',
@@ -205,4 +249,10 @@ export async function uploadRecipeImage(file: File, userId: string, title: strin
   } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(filePath);
 
   return publicUrl;
+}
+
+export async function uploadRecipeImages(files: File[], userId: string, title: string) {
+  return Promise.all(
+    files.map((file, index) => uploadRecipeImage(file, userId, `${title}-${index + 1}`)),
+  );
 }

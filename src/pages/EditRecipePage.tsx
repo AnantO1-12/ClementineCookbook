@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { RecipeForm } from '../components/RecipeForm';
+import { RecipeForm, type RecipeImageUpload, type RecipeThumbnailSelection } from '../components/RecipeForm';
 import { ErrorState } from '../components/ui/ErrorState';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
-import { getRecipeBySlug, updateRecipe, uploadRecipeImage } from '../services/recipeService';
+import { getRecipeBySlug, updateRecipe, uploadRecipeImages } from '../services/recipeService';
 import type { Recipe, RecipeFormValues, RecipeMutationInput } from '../types/recipe';
 
 function buildInitialValues(recipe: Recipe): RecipeFormValues {
@@ -22,6 +22,11 @@ function buildInitialValues(recipe: Recipe): RecipeFormValues {
     instructions: recipe.instructions.length ? recipe.instructions : [''],
     notes: recipe.notes ?? '',
     image_url: recipe.image_url ?? '',
+    image_urls: recipe.image_urls.length
+      ? recipe.image_urls
+      : recipe.image_url
+        ? [recipe.image_url]
+        : [],
     is_favorite: recipe.is_favorite,
   };
 }
@@ -68,7 +73,11 @@ export function EditRecipePage() {
     void loadRecipe();
   }, [slug]);
 
-  const handleUpdateRecipe = async (values: RecipeMutationInput, imageFile: File | null) => {
+  const handleUpdateRecipe = async (
+    values: RecipeMutationInput,
+    imageUploads: RecipeImageUpload[],
+    thumbnailSelection: RecipeThumbnailSelection,
+  ) => {
     if (!recipe) {
       return;
     }
@@ -85,15 +94,25 @@ export function EditRecipePage() {
     setSubmitting(true);
 
     try {
-      let imageUrl = values.image_url;
-
-      if (imageFile) {
-        imageUrl = await uploadRecipeImage(imageFile, user.id, values.title);
-      }
+      const uploadedUrls = imageUploads.length
+        ? await uploadRecipeImages(
+            imageUploads.map((imageUpload) => imageUpload.file),
+            user.id,
+            values.title,
+          )
+        : [];
+      const imageUrls = [...values.image_urls, ...uploadedUrls];
+      const thumbnailUrl =
+        thumbnailSelection?.type === 'existing'
+          ? thumbnailSelection.value
+          : thumbnailSelection?.type === 'upload'
+            ? uploadedUrls[imageUploads.findIndex((imageUpload) => imageUpload.id === thumbnailSelection.value)] ?? null
+            : imageUrls[0] ?? null;
 
       const updatedRecipe = await updateRecipe(recipe.id, {
         ...values,
-        image_url: imageUrl,
+        image_url: thumbnailUrl,
+        image_urls: imageUrls,
       });
 
       setRecipe(updatedRecipe);

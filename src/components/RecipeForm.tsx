@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 
 import type { FormErrors, RecipeFormValues, RecipeMutationInput } from '../types/recipe';
 import { normalizeStringArray } from '../utils/format';
@@ -7,6 +7,20 @@ import { PlusIcon, TrashIcon, UploadIcon } from './ui/Icons';
 
 type ListField = 'ingredients' | 'instructions';
 type ImageMode = 'url' | 'upload';
+
+export interface RecipeImageUpload {
+  id: string;
+  file: File;
+}
+
+export type RecipeThumbnailSelection =
+  | { type: 'existing'; value: string }
+  | { type: 'upload'; value: string }
+  | null;
+
+interface PendingImageUpload extends RecipeImageUpload {
+  previewUrl: string;
+}
 
 const DEFAULT_VALUES: RecipeFormValues = {
   title: '',
@@ -20,14 +34,37 @@ const DEFAULT_VALUES: RecipeFormValues = {
   instructions: [''],
   notes: '',
   image_url: '',
+  image_urls: [],
   is_favorite: false,
 };
+
+function createUploadId() {
+  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function buildInitialThumbnailSelection(values: RecipeFormValues): RecipeThumbnailSelection {
+  if (values.image_url) {
+    return { type: 'existing', value: values.image_url };
+  }
+
+  if (values.image_urls[0]) {
+    return { type: 'existing', value: values.image_urls[0] };
+  }
+
+  return null;
+}
 
 interface RecipeFormProps {
   mode: 'create' | 'edit';
   initialValues?: RecipeFormValues;
   submitting?: boolean;
-  onSubmit: (values: RecipeMutationInput, imageFile: File | null) => Promise<void>;
+  onSubmit: (
+    values: RecipeMutationInput,
+    imageUploads: RecipeImageUpload[],
+    thumbnailSelection: RecipeThumbnailSelection,
+  ) => Promise<void>;
 }
 
 export function RecipeForm({
@@ -39,29 +76,68 @@ export function RecipeForm({
   const [values, setValues] = useState<RecipeFormValues>(initialValues ?? DEFAULT_VALUES);
   const [errors, setErrors] = useState<FormErrors>({});
   const [imageMode, setImageMode] = useState<ImageMode>('url');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [pendingImageUrl, setPendingImageUrl] = useState('');
+  const [imageUploads, setImageUploads] = useState<PendingImageUpload[]>([]);
+  const [thumbnailSelection, setThumbnailSelection] = useState<RecipeThumbnailSelection>(null);
+  const imageUploadsRef = useRef<PendingImageUpload[]>([]);
 
   useEffect(() => {
-    setValues(initialValues ?? DEFAULT_VALUES);
+    imageUploadsRef.current = imageUploads;
+  }, [imageUploads]);
+
+  useEffect(() => {
+    return () => {
+      imageUploadsRef.current.forEach((upload) => {
+        URL.revokeObjectURL(upload.previewUrl);
+      });
+    };
+  }, []);
+
+  const clearPendingUploads = () => {
+    imageUploadsRef.current.forEach((upload) => {
+      URL.revokeObjectURL(upload.previewUrl);
+    });
+    imageUploadsRef.current = [];
+    setImageUploads([]);
+  };
+
+  useEffect(() => {
+    const nextValues = initialValues ?? DEFAULT_VALUES;
+    setValues(nextValues);
     setImageMode('url');
-    setImageFile(null);
+    setPendingImageUrl('');
+    clearPendingUploads();
+    setThumbnailSelection(buildInitialThumbnailSelection(nextValues));
     setErrors({});
   }, [initialValues]);
 
   useEffect(() => {
-    if (!imageFile) {
-      setImagePreview(values.image_url);
-      return;
-    }
+    setThumbnailSelection((currentSelection) => {
+      if (
+        currentSelection?.type === 'existing' &&
+        values.image_urls.includes(currentSelection.value)
+      ) {
+        return currentSelection;
+      }
 
-    const objectUrl = URL.createObjectURL(imageFile);
-    setImagePreview(objectUrl);
+      if (
+        currentSelection?.type === 'upload' &&
+        imageUploads.some((upload) => upload.id === currentSelection.value)
+      ) {
+        return currentSelection;
+      }
 
-    return () => {
-      URL.revokeObjectURL(objectUrl);
-    };
-  }, [imageFile, values.image_url]);
+      if (values.image_urls[0]) {
+        return { type: 'existing', value: values.image_urls[0] };
+      }
+
+      if (imageUploads[0]) {
+        return { type: 'upload', value: imageUploads[0].id };
+      }
+
+      return null;
+    });
+  }, [imageUploads, values.image_urls]);
 
   const updateValue = <FieldName extends keyof RecipeFormValues>(
     field: FieldName,
@@ -146,12 +222,100 @@ export function RecipeForm({
     return Object.keys(nextErrors).length === 0;
   };
 
+  const addImageUrl = () => {
+    const normalizedUrl = pendingImageUrl.trim();
+
+    if (!normalizedUrl) {
+      return;
+    }
+
+    if (values.image_urls.includes(normalizedUrl)) {
+      setPendingImageUrl('');
+      return;
+    }
+
+    updateValue('image_urls', [...values.image_urls, normalizedUrl]);
+    setPendingImageUrl('');
+    setThumbnailSelection((currentSelection) =>
+      currentSelection ?? { type: 'existing', value: normalizedUrl },
+    );
+  };
+
+  const removeExistingImage = (url: string) => {
+    updateValue(
+      'image_urls',
+      values.image_urls.filter((currentUrl) => currentUrl !== url),
+    );
+  };
+
+  const removePendingUpload = (uploadId: string) => {
+    setImageUploads((currentUploads) => {
+      const uploadToRemove = currentUploads.find((upload) => upload.id === uploadId);
+
+      if (uploadToRemove) {
+        URL.revokeObjectURL(uploadToRemove.previewUrl);
+      }
+
+      return currentUploads.filter((upload) => upload.id !== uploadId);
+    });
+  };
+
+  const handleFileSelection = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextFiles = Array.from(event.target.files ?? []);
+
+    if (!nextFiles.length) {
+      return;
+    }
+
+    const nextUploads = nextFiles.map((file) => ({
+      id: createUploadId(),
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+
+    setImageUploads((currentUploads) => [...currentUploads, ...nextUploads]);
+    setThumbnailSelection((currentSelection) =>
+      currentSelection ?? { type: 'upload', value: nextUploads[0].id },
+    );
+    event.target.value = '';
+  };
+
+  const imageCards = [
+    ...values.image_urls.map((url) => ({
+      id: `existing:${url}`,
+      kind: 'existing' as const,
+      src: url,
+      label: 'Saved image',
+      rawValue: url,
+    })),
+    ...imageUploads.map((upload) => ({
+      id: `upload:${upload.id}`,
+      kind: 'upload' as const,
+      src: upload.previewUrl,
+      label: upload.file.name,
+      rawValue: upload.id,
+    })),
+  ];
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!validate()) {
       return;
     }
+
+    const inlineImageUrl = pendingImageUrl.trim();
+    const imageUrls =
+      inlineImageUrl && !values.image_urls.includes(inlineImageUrl)
+        ? [...values.image_urls, inlineImageUrl]
+        : values.image_urls;
+    const effectiveThumbnailSelection =
+      thumbnailSelection ??
+      (imageUrls[0]
+        ? { type: 'existing' as const, value: imageUrls[0] }
+        : imageUploads[0]
+          ? { type: 'upload' as const, value: imageUploads[0].id }
+          : null);
 
     await onSubmit(
       {
@@ -165,10 +329,15 @@ export function RecipeForm({
         ingredients: normalizeStringArray(values.ingredients),
         instructions: normalizeStringArray(values.instructions),
         notes: values.notes.trim() || null,
-        image_url: values.image_url.trim() || null,
+        image_url:
+          effectiveThumbnailSelection?.type === 'existing'
+            ? effectiveThumbnailSelection.value.trim()
+            : null,
+        image_urls: imageUrls,
         is_favorite: values.is_favorite,
       },
-      imageMode === 'upload' ? imageFile : null,
+      imageUploads.map(({ id, file }) => ({ id, file })),
+      effectiveThumbnailSelection,
     );
   };
 
@@ -383,9 +552,12 @@ export function RecipeForm({
         <div className="surface-panel space-y-5 px-5 py-6 sm:px-6">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-orange">
-              Image
+              Images
             </p>
-            <h2 className="font-display text-2xl text-recipe-ink dark:text-recipe-sand">Recipe cover</h2>
+            <h2 className="font-display text-2xl text-recipe-ink dark:text-recipe-sand">Recipe gallery</h2>
+            <p className="text-sm leading-6 text-recipe-ink/62 dark:text-recipe-sand/62">
+              Add as many images as you like, then click one to use it as the thumbnail.
+            </p>
           </div>
 
           <div className="flex rounded-full bg-recipe-cream p-1 dark:bg-[#2a1b15]">
@@ -409,23 +581,28 @@ export function RecipeForm({
                   : 'text-recipe-ink/60 hover:text-recipe-ink dark:text-recipe-sand/55 dark:hover:text-recipe-sand'
               }`}
             >
-              Upload file
+              Upload files
             </button>
           </div>
 
           {imageMode === 'url' ? (
-            <div>
+            <div className="space-y-3">
               <label className="field-label" htmlFor="image_url">
                 Public image URL
               </label>
-              <input
-                id="image_url"
-                value={values.image_url}
-                onChange={(event) => updateValue('image_url', event.target.value)}
-                className="field-input"
-                placeholder="https://images.example.com/your-dish.jpg"
-              />
-              <p className="mt-2 text-xs leading-6 text-recipe-ink/55 dark:text-recipe-sand/55">
+              <div className="flex gap-3">
+                <input
+                  id="image_url"
+                  value={pendingImageUrl}
+                  onChange={(event) => setPendingImageUrl(event.target.value)}
+                  className="field-input"
+                  placeholder="https://images.example.com/your-dish.jpg"
+                />
+                <button type="button" onClick={addImageUrl} className="btn-secondary shrink-0">
+                  Add image
+                </button>
+              </div>
+              <p className="text-xs leading-6 text-recipe-ink/55 dark:text-recipe-sand/55">
                 Use this if you want the simplest setup without Storage.
               </p>
             </div>
@@ -436,28 +613,101 @@ export function RecipeForm({
                   <UploadIcon className="h-5 w-5" />
                 </span>
                 <span className="text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
-                  {imageFile ? imageFile.name : 'Choose an image to upload'}
+                  Choose one or many images to upload
                 </span>
                 <span className="text-xs leading-6 text-recipe-ink/55 dark:text-recipe-sand/55">
-                  Upload uses the optional Supabase Storage bucket from the SQL docs.
+                  To enable uploads, run `supabase/migrations/002_recipe_images_bucket.sql` once in your Supabase SQL Editor.
                 </span>
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   className="sr-only"
-                  onChange={(event) => setImageFile(event.target.files?.[0] ?? null)}
+                  onChange={handleFileSelection}
                 />
               </label>
             </div>
           )}
 
-          <div className="overflow-hidden rounded-[28px] bg-recipe-cream/80 dark:bg-[#2a1b15]">
-            <RecipeImage
-              src={imagePreview}
-              alt="Recipe preview"
-              className="aspect-[4/3] w-full object-cover"
-              loading="eager"
-            />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/52 dark:text-recipe-sand/52">
+                Image set
+              </p>
+              <p className="text-xs text-recipe-ink/52 dark:text-recipe-sand/52">
+                {imageCards.length} image{imageCards.length === 1 ? '' : 's'}
+              </p>
+            </div>
+
+            {imageCards.length ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {imageCards.map((imageCard) => {
+                  const isThumbnail =
+                    thumbnailSelection?.type === imageCard.kind &&
+                    thumbnailSelection.value === imageCard.rawValue;
+
+                  return (
+                    <div
+                      key={imageCard.id}
+                      className={`overflow-hidden rounded-[24px] border transition duration-300 ${
+                        isThumbnail
+                          ? 'border-recipe-orange/70 shadow-[0_0_0_1px_rgba(242,143,52,0.35),0_18px_36px_rgba(242,143,52,0.16)]'
+                          : 'border-white/10'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setThumbnailSelection({
+                            type: imageCard.kind,
+                            value: imageCard.rawValue,
+                          })
+                        }
+                        className="block w-full text-left"
+                      >
+                        <RecipeImage
+                          src={imageCard.src}
+                          alt={imageCard.label}
+                          className="aspect-[4/3] w-full object-cover"
+                          loading="eager"
+                        />
+                      </button>
+                      <div className="flex items-center justify-between gap-3 bg-recipe-cream/80 px-3 py-3 dark:bg-[#2a1b15]">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-recipe-ink dark:text-recipe-sand">
+                            {imageCard.label}
+                          </p>
+                          <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-recipe-ink/48 dark:text-recipe-sand/48">
+                            {isThumbnail ? 'Thumbnail' : 'Click to set thumbnail'}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            imageCard.kind === 'existing'
+                              ? removeExistingImage(imageCard.rawValue)
+                              : removePendingUpload(imageCard.rawValue)
+                          }
+                          className="icon-button h-10 w-10"
+                          aria-label={`Remove ${imageCard.label}`}
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-[28px] bg-recipe-cream/80 dark:bg-[#2a1b15]">
+                <RecipeImage
+                  src={null}
+                  alt="Recipe preview"
+                  className="aspect-[4/3] w-full object-cover"
+                  loading="eager"
+                />
+              </div>
+            )}
           </div>
         </div>
 

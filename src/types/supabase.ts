@@ -27,6 +27,7 @@ export interface Database {
           instructions: Json;
           notes: string | null;
           image_url: string | null;
+          image_urls: Json;
           is_favorite: boolean;
         };
         Insert: {
@@ -46,6 +47,7 @@ export interface Database {
           instructions?: Json;
           notes?: string | null;
           image_url?: string | null;
+          image_urls?: Json;
           is_favorite?: boolean;
         };
         Update: {
@@ -65,6 +67,7 @@ export interface Database {
           instructions?: Json;
           notes?: string | null;
           image_url?: string | null;
+          image_urls?: Json;
           is_favorite?: boolean;
         };
         Relationships: [];

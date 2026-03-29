@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { RecipeForm } from '../components/RecipeForm';
+import { RecipeForm, type RecipeImageUpload, type RecipeThumbnailSelection } from '../components/RecipeForm';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
-import { createRecipe, uploadRecipeImage } from '../services/recipeService';
+import { createRecipe, uploadRecipeImages } from '../services/recipeService';
 import type { RecipeMutationInput } from '../types/recipe';
 
 export function AddRecipePage() {
@@ -13,7 +13,11 @@ export function AddRecipePage() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
-  const handleCreateRecipe = async (values: RecipeMutationInput, imageFile: File | null) => {
+  const handleCreateRecipe = async (
+    values: RecipeMutationInput,
+    imageUploads: RecipeImageUpload[],
+    thumbnailSelection: RecipeThumbnailSelection,
+  ) => {
     if (!user) {
       showToast({
         title: 'You need to sign in',
@@ -26,13 +30,29 @@ export function AddRecipePage() {
     setSubmitting(true);
 
     try {
-      let imageUrl = values.image_url;
+      const uploadedUrls = imageUploads.length
+        ? await uploadRecipeImages(
+            imageUploads.map((imageUpload) => imageUpload.file),
+            user.id,
+            values.title,
+          )
+        : [];
+      const imageUrls = [...values.image_urls, ...uploadedUrls];
+      const thumbnailUrl =
+        thumbnailSelection?.type === 'existing'
+          ? thumbnailSelection.value
+          : thumbnailSelection?.type === 'upload'
+            ? uploadedUrls[imageUploads.findIndex((imageUpload) => imageUpload.id === thumbnailSelection.value)] ?? null
+            : imageUrls[0] ?? null;
 
-      if (imageFile) {
-        imageUrl = await uploadRecipeImage(imageFile, user.id, values.title);
-      }
-
-      const recipe = await createRecipe({ ...values, image_url: imageUrl }, user.id);
+      const recipe = await createRecipe(
+        {
+          ...values,
+          image_url: thumbnailUrl,
+          image_urls: imageUrls,
+        },
+        user.id,
+      );
 
       showToast({
         title: 'Recipe saved',

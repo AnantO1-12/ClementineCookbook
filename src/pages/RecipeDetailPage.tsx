@@ -130,12 +130,12 @@ export function RecipeDetailPage() {
 
   return (
     <article className="space-y-8">
-      <section className="grid gap-8 xl:grid-cols-[1fr_0.95fr] xl:items-start">
-        <div className="overflow-hidden rounded-[36px] bg-recipe-cream shadow-soft dark:bg-[#2b1c16]">
+      <section className="grid gap-8 xl:grid-cols-[minmax(240px,0.58fr)_minmax(0,1.42fr)] xl:items-start xl:gap-10">
+        <div className="overflow-hidden rounded-[32px] bg-recipe-cream shadow-soft dark:bg-[#2b1c16] xl:max-w-[460px]">
           <RecipeImage
             src={recipe.image_url}
             alt={recipe.title}
-            className="aspect-[4/3.8] w-full object-cover"
+            className="aspect-[1/1.02] w-full object-cover"
             loading="eager"
           />
         </div>
@@ -159,23 +159,29 @@ export function RecipeDetailPage() {
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[28px] bg-white px-4 py-4 shadow-card dark:border dark:border-recipe-clay/40 dark:bg-[#1d1410] dark:shadow-none">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
+          <div className="grid gap-5 border-t border-white/8 pt-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/58 dark:text-recipe-peel/62">
                 Time
               </p>
-              <div className="mt-3 space-y-2 text-sm text-recipe-ink/75 dark:text-recipe-sand/74">
-                <p className="inline-flex items-center gap-2"><ClockIcon className="h-4 w-4" />{formatPrepCook(recipe)}</p>
-                <p>{getTotalTime(recipe)} total</p>
+              <div className="space-y-2 text-sm text-recipe-ink/82 dark:text-recipe-sand/84">
+                <p className="inline-flex items-center gap-2">
+                  <ClockIcon className="h-4 w-4 text-recipe-orange dark:text-recipe-copper" />
+                  <span>{formatPrepCook(recipe)}</span>
+                </p>
+                <p className="pl-6 text-recipe-ink/68 dark:text-recipe-sand/70">{getTotalTime(recipe)} total</p>
               </div>
             </div>
-            <div className="rounded-[28px] bg-white px-4 py-4 shadow-card dark:border dark:border-recipe-clay/40 dark:bg-[#1d1410] dark:shadow-none">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/45 dark:text-recipe-sand/45">
+            <div className="space-y-2 sm:border-l sm:border-white/8 sm:pl-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-recipe-ink/58 dark:text-recipe-peel/62">
                 Servings
               </p>
-              <div className="mt-3 space-y-2 text-sm text-recipe-ink/75 dark:text-recipe-sand/74">
-                <p className="inline-flex items-center gap-2"><BowlIcon className="h-4 w-4" />{recipe.servings || 'Flexible'}</p>
-                <p>{recipe.instructions.length} steps</p>
+              <div className="space-y-2 text-sm text-recipe-ink/82 dark:text-recipe-sand/84">
+                <p className="inline-flex items-center gap-2">
+                  <BowlIcon className="h-4 w-4 text-recipe-orange dark:text-recipe-copper" />
+                  <span>{recipe.servings || 'Flexible'}</span>
+                </p>
+                <p className="pl-6 text-recipe-ink/68 dark:text-recipe-sand/70">{recipe.instructions.length} steps</p>
               </div>
             </div>
           </div>

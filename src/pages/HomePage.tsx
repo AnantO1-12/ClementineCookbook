@@ -1,4 +1,4 @@
-import { useDeferredValue, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { Link } from 'react-router-dom';
 
 import { CategoryFilter } from '../components/CategoryFilter';
@@ -19,7 +19,6 @@ export function HomePage() {
   const [searchValue, setSearchValue] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isPending, startTransition] = useTransition();
-  const deferredSearch = useDeferredValue(searchValue);
 
   const categories = Array.from(
     new Set(
@@ -29,28 +28,49 @@ export function HomePage() {
     ),
   ).sort((left, right) => left.localeCompare(right));
 
-  const normalizedSearch = deferredSearch.trim().toLowerCase();
+  const normalizedSearch = searchValue.trim().toLowerCase();
+  const searchTerms = normalizedSearch.split(/\s+/).filter(Boolean);
 
-  const filteredRecipes = recipes
+  const categoryScopedRecipes = recipes.filter((recipe) => {
+    return selectedCategory === 'All'
+      ? true
+      : selectedCategory === 'Favorites'
+        ? recipe.is_favorite
+        : recipe.category?.toLowerCase() === selectedCategory.toLowerCase();
+  });
+
+  const filteredRecipes = categoryScopedRecipes
     .filter((recipe) => {
-      const haystack = [recipe.title, recipe.category, recipe.cuisine, recipe.description]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
+      if (!searchTerms.length) {
+        return true;
+      }
 
-      const matchesSearch = !normalizedSearch || haystack.includes(normalizedSearch);
-      const matchesCategory =
-        selectedCategory === 'All'
-          ? true
-          : selectedCategory === 'Favorites'
-            ? recipe.is_favorite
-            : recipe.category?.toLowerCase() === selectedCategory.toLowerCase();
+      const searchableText = [recipe.title, ...recipe.ingredients].join(' ').toLowerCase();
 
-      return matchesSearch && matchesCategory;
+      return searchTerms.every((term) => searchableText.includes(term));
     })
     .sort((left, right) => {
       return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
     });
+
+  const searchSuggestions = searchTerms.length
+    ? filteredRecipes.slice(0, 5).map((recipe) => {
+        const matchedIngredient = recipe.ingredients.find((ingredient) =>
+          searchTerms.some((term) => ingredient.toLowerCase().includes(term)),
+        );
+
+        return {
+          id: recipe.id,
+          title: recipe.title,
+          slug: recipe.slug,
+          detail: matchedIngredient
+            ? `Ingredient match: ${matchedIngredient}`
+            : recipe.category
+              ? sentenceCase(recipe.category)
+              : undefined,
+        };
+      })
+    : [];
 
   const featuredRecipe = filteredRecipes[0] ?? recipes[0] ?? null;
   const favoriteCount = recipes.filter((recipe) => recipe.is_favorite).length;
@@ -92,6 +112,7 @@ export function HomePage() {
             }}
             isPending={isPending}
             size="hero"
+            suggestions={searchSuggestions}
           />
 
           <section className="animate-rise space-y-3.5 pt-0.5" style={{ animationDelay: '220ms' }}>

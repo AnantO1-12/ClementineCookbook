@@ -1,50 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { SearchIcon } from './ui/Icons';
+
+interface SearchSuggestion {
+  id: string;
+  title: string;
+  slug: string;
+  detail?: string;
+}
 
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   isPending?: boolean;
   size?: 'default' | 'hero';
+  suggestions?: SearchSuggestion[];
 }
-
-const HERO_PROMPTS = ['citrus', 'breakfast', 'mediterranean', 'dinner'];
-const DEFAULT_PROMPTS = ['citrus', 'breakfast', 'dinner'];
 
 export function SearchBar({
   value,
   onChange,
   isPending = false,
   size = 'default',
+  suggestions = [],
 }: SearchBarProps) {
   const isHero = size === 'hero';
   const [isFocused, setIsFocused] = useState(false);
-  const [promptIndex, setPromptIndex] = useState(0);
-  const prompts = isHero ? HERO_PROMPTS : DEFAULT_PROMPTS;
-  const activePrompt = prompts[promptIndex];
-
-  useEffect(() => {
-    if (value || isFocused || isPending) {
-      return undefined;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setPromptIndex((currentIndex) => (currentIndex + 1) % prompts.length);
-    }, 2400);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [isFocused, isPending, prompts.length, value]);
+  const shouldShowSuggestions = value.trim().length > 0 && suggestions.length > 0;
 
   return (
-    <div className={`relative ${isHero ? 'space-y-3' : ''}`}>
+    <div className="relative">
       <label
         className={`search-shell group relative isolate flex items-center gap-3 overflow-hidden rounded-full border border-white/16 bg-white/10 shadow-[0_18px_36px_rgba(168,98,35,0.12)] backdrop-blur-xl transition duration-500 dark:border-white/10 dark:bg-[#1b120e]/72 dark:shadow-none ${
           isFocused
             ? 'border-recipe-orange/55 shadow-[0_24px_56px_rgba(196,98,28,0.2)]'
-            : 'hover:border-white/24 hover:bg-white/[0.13]'
+            : 'hover:border-recipe-orange/70 hover:bg-white/[0.13] hover:shadow-[0_0_0_1px_rgba(242,143,52,0.3),0_22px_48px_rgba(242,143,52,0.22)]'
         } ${isHero ? 'px-4 py-3.5 sm:px-5 sm:py-4' : 'px-4 py-3'}`}
       >
         <div className="pointer-events-none absolute inset-0 rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0.06),rgba(255,186,120,0.02),rgba(255,255,255,0.04))]" />
@@ -79,7 +70,7 @@ export function SearchBar({
           onChange={(event) => onChange(event.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder="Search by title, category, or cuisine"
+          placeholder="Search by title or ingredient"
           className={`relative z-10 w-full min-w-0 bg-transparent text-recipe-ink placeholder:text-recipe-ink/42 focus:outline-none dark:text-recipe-sand dark:placeholder:text-recipe-sand/42 ${
             isHero ? 'text-base sm:text-lg' : 'text-sm'
           }`}
@@ -87,23 +78,6 @@ export function SearchBar({
         />
 
         <div className="relative z-10 flex shrink-0 items-center gap-2">
-          {!value && !isPending ? (
-            <button
-              type="button"
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => onChange(activePrompt)}
-              className={`hidden items-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.22em] text-recipe-burnt/85 transition duration-300 hover:border-recipe-orange/40 hover:bg-recipe-orange/14 hover:text-recipe-ember dark:text-recipe-peel/85 dark:hover:text-recipe-copper ${
-                isHero ? 'sm:inline-flex' : 'md:inline-flex'
-              }`}
-              aria-label={`Search for ${activePrompt}`}
-            >
-              <span className="text-recipe-ink/45 dark:text-recipe-sand/45">Try</span>
-              <span className="animate-search-bob text-recipe-burnt dark:text-recipe-peel">
-                {activePrompt}
-              </span>
-            </button>
-          ) : null}
-
           {value ? (
             <button
               type="button"
@@ -131,18 +105,30 @@ export function SearchBar({
         </div>
       </label>
 
-      {isHero ? (
-        <div className="flex flex-wrap gap-2 px-2">
-          {['Citrus', 'Breakfast', 'Dinner'].map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              onClick={() => onChange(prompt.toLowerCase())}
-              className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-recipe-burnt/75 transition duration-300 hover:-translate-y-0.5 hover:border-recipe-orange/40 hover:bg-recipe-orange/12 hover:text-recipe-ember dark:text-recipe-peel/75 dark:hover:text-recipe-copper"
-            >
-              {prompt}
-            </button>
-          ))}
+      {shouldShowSuggestions ? (
+        <div className="absolute inset-x-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[26px] border border-recipe-orange/35 bg-[linear-gradient(180deg,rgba(59,33,22,0.96)_0%,rgba(51,28,18,0.94)_100%)] shadow-[0_26px_54px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+          <div className="border-b border-white/10 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-recipe-peel/72">
+            Recipe suggestions
+          </div>
+          <div className="p-2">
+            {suggestions.map((suggestion) => (
+              <Link
+                key={suggestion.id}
+                to={`/recipes/${suggestion.slug}`}
+                className="flex items-center justify-between gap-4 rounded-[20px] px-4 py-3 transition duration-300 hover:bg-white/8"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-[#fff2e4]">{suggestion.title}</p>
+                  {suggestion.detail ? (
+                    <p className="mt-1 truncate text-xs text-[#ffdcbc]/72">{suggestion.detail}</p>
+                  ) : null}
+                </div>
+                <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.22em] text-recipe-peel/72">
+                  Open
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>

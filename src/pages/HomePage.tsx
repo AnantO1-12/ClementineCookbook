@@ -57,12 +57,12 @@ export function HomePage() {
 
   return (
     <div className="space-y-10 xl:space-y-14">
-      <section className="relative isolate overflow-hidden rounded-[42px] border border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.92)_0%,rgba(255,246,234,0.9)_38%,rgba(255,223,185,0.78)_100%)] px-5 py-5 shadow-soft dark:border-recipe-clay/45 dark:bg-[linear-gradient(145deg,rgba(31,18,12,0.95)_0%,rgba(47,24,15,0.93)_40%,rgba(92,41,18,0.84)_100%)] sm:px-7 sm:py-6 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-8 xl:px-10 xl:py-7 2xl:grid-cols-[0.76fr_1.24fr]">
+      <section className="relative isolate mx-auto max-w-[1360px] overflow-hidden rounded-[38px] border border-white/55 bg-[linear-gradient(145deg,rgba(255,255,255,0.92)_0%,rgba(255,246,234,0.9)_38%,rgba(255,223,185,0.78)_100%)] px-4 py-4 shadow-soft dark:border-recipe-clay/45 dark:bg-[linear-gradient(145deg,rgba(31,18,12,0.95)_0%,rgba(47,24,15,0.93)_40%,rgba(92,41,18,0.84)_100%)] sm:px-6 sm:py-5 lg:grid lg:grid-cols-[0.78fr_1.12fr] lg:items-start lg:gap-6 xl:px-7 xl:py-5 2xl:max-w-[1400px] 2xl:grid-cols-[0.75fr_1.1fr]">
         <div className="pointer-events-none absolute -left-10 top-4 h-48 w-48 rounded-full bg-white/45 blur-3xl animate-drift dark:bg-recipe-copper/10" />
         <div className="pointer-events-none absolute left-[42%] top-[58%] h-44 w-44 rounded-full bg-recipe-orange/15 blur-3xl animate-pulse-glow dark:bg-recipe-orange/18" />
         <div className="pointer-events-none absolute -right-12 top-12 h-64 w-64 rounded-full bg-recipe-marmalade/20 blur-3xl animate-drift-reverse dark:bg-recipe-copper/18" />
 
-        <div className="relative z-10 space-y-4 lg:pt-1 xl:pr-4">
+        <div className="relative z-10 flex flex-col gap-4 lg:h-full lg:justify-between lg:py-1 xl:pr-2">
           <div
             className="animate-rise flex items-center gap-4 sm:gap-5"
             style={{ animationDelay: '70ms' }}
@@ -78,7 +78,7 @@ export function HomePage() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-recipe-burnt dark:text-recipe-peel sm:text-xs">
                 Clementine Notebook
               </p>
-              <p className="max-w-sm text-sm leading-6 text-recipe-burnt/68 dark:text-recipe-copper/88">
+              <p className="max-w-[19rem] text-sm leading-6 text-recipe-burnt/68 dark:text-recipe-copper/88">
                 A softer rhythm for recipes you actually make.
               </p>
             </div>
@@ -94,7 +94,7 @@ export function HomePage() {
             size="hero"
           />
 
-          <section className="animate-rise space-y-4 pt-0.5" style={{ animationDelay: '220ms' }}>
+          <section className="animate-rise space-y-3.5 pt-0.5" style={{ animationDelay: '220ms' }}>
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-recipe-burnt dark:text-recipe-peel">
                 Explore the shelf
@@ -111,34 +111,34 @@ export function HomePage() {
               />
             </div>
 
-            <div className="flex flex-wrap gap-2.5">
-              <div className="min-w-[94px] rounded-[24px] border border-white/40 bg-white/14 px-3 py-2 shadow-sm backdrop-blur-md dark:border-recipe-clay/30 dark:bg-[#20130e]/26">
+            <div className="flex flex-wrap gap-2">
+              <div className="min-w-[84px] rounded-[22px] border border-white/38 bg-white/12 px-2.5 py-1.5 shadow-sm backdrop-blur-md dark:border-recipe-clay/28 dark:bg-[#20130e]/24">
                 <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-recipe-ink/45 dark:text-recipe-sand/45">
                   Recipes
                 </p>
-                <p className="mt-1 font-display text-[1.8rem] leading-none text-recipe-ink dark:text-recipe-sand">
+                <p className="mt-0.5 font-display text-[1.55rem] leading-none text-recipe-ink dark:text-recipe-sand">
                   {recipes.length}
                 </p>
               </div>
-              <div className="min-w-[94px] rounded-[24px] border border-white/40 bg-white/14 px-3 py-2 shadow-sm backdrop-blur-md dark:border-recipe-clay/30 dark:bg-[#20130e]/26">
+              <div className="min-w-[84px] rounded-[22px] border border-white/38 bg-white/12 px-2.5 py-1.5 shadow-sm backdrop-blur-md dark:border-recipe-clay/28 dark:bg-[#20130e]/24">
                 <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-recipe-ink/45 dark:text-recipe-sand/45">
                   Categories
                 </p>
-                <p className="mt-1 font-display text-[1.8rem] leading-none text-recipe-ink dark:text-recipe-sand">
+                <p className="mt-0.5 font-display text-[1.55rem] leading-none text-recipe-ink dark:text-recipe-sand">
                   {categories.length}
                 </p>
               </div>
-              <div className="min-w-[94px] rounded-[24px] border border-white/40 bg-white/14 px-3 py-2 shadow-sm backdrop-blur-md dark:border-recipe-clay/30 dark:bg-[#20130e]/26">
+              <div className="min-w-[84px] rounded-[22px] border border-white/38 bg-white/12 px-2.5 py-1.5 shadow-sm backdrop-blur-md dark:border-recipe-clay/28 dark:bg-[#20130e]/24">
                 <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-recipe-ink/45 dark:text-recipe-sand/45">
                   Favorites
                 </p>
-                <p className="mt-1 font-display text-[1.8rem] leading-none text-recipe-ink dark:text-recipe-sand">
+                <p className="mt-0.5 font-display text-[1.55rem] leading-none text-recipe-ink dark:text-recipe-sand">
                   {favoriteCount}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-1">
+            <div className="flex flex-wrap gap-3 pt-0.5">
               <Link to={featuredRecipe ? `/recipes/${featuredRecipe.slug}` : '/'} className="btn-primary">
                 <span>{featuredRecipe ? 'Open featured recipe' : 'Start browsing'}</span>
                 <ArrowRightIcon className="h-4 w-4" />
@@ -153,31 +153,31 @@ export function HomePage() {
           </section>
         </div>
 
-        <div className="relative z-10 mt-6 overflow-hidden rounded-[34px] border border-white/45 bg-white/12 shadow-[0_20px_44px_rgba(89,42,16,0.16)] backdrop-blur-xl dark:border-recipe-clay/40 dark:bg-[#1d120d]/22 lg:mt-0 lg:w-full lg:max-w-[760px] lg:justify-self-end xl:max-w-[820px] animate-rise" style={{ animationDelay: '140ms' }}>
+        <div className="relative z-10 mt-4 overflow-hidden rounded-[30px] border border-white/45 bg-white/12 shadow-[0_18px_38px_rgba(89,42,16,0.15)] backdrop-blur-xl dark:border-recipe-clay/40 dark:bg-[#1d120d]/22 lg:mt-0 lg:w-full lg:max-w-[620px] lg:justify-self-end xl:max-w-[680px] 2xl:max-w-[710px] animate-rise" style={{ animationDelay: '140ms' }}>
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-recipe-peel via-recipe-orange to-recipe-ember" />
           <RecipeImage
             src={featuredRecipe?.image_url}
             alt={featuredRecipe?.title ?? 'Featured recipe preview'}
-            className="aspect-[4/3] w-full object-cover transition duration-700 sm:aspect-[16/11] lg:aspect-[5/4] 2xl:aspect-[16/13]"
+            className="aspect-[4/3] w-full object-cover transition duration-700 sm:aspect-[16/11] lg:aspect-[16/11] 2xl:aspect-[1.55/1]"
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-recipe-night/90 via-recipe-burnt/18 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 space-y-3 p-5 text-white sm:p-6 xl:p-7">
+          <div className="absolute inset-x-0 bottom-0 space-y-2.5 p-4 text-white sm:p-5 xl:p-6">
             <div className="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
               {featuredRecipe?.category ? <span>{sentenceCase(featuredRecipe.category)}</span> : null}
               {featuredRecipe?.cuisine ? <span>{sentenceCase(featuredRecipe.cuisine)}</span> : null}
             </div>
             <div>
-              <p className="font-display text-[2rem] sm:text-[2.35rem] xl:text-[2.45rem]">
+              <p className="font-display text-[1.7rem] sm:text-[2rem] xl:text-[2.1rem]">
                 {featuredRecipe?.title ?? 'Your recipes will shine here'}
               </p>
-              <p className="mt-1.5 max-w-xl text-sm leading-6 text-white/82 xl:text-[0.95rem]">
+              <p className="mt-1 max-w-xl text-[13px] leading-5 text-white/82 xl:text-[0.9rem]">
                 {featuredRecipe?.description ||
                   'Seed the database and the home page will spotlight one of your dishes here.'}
               </p>
             </div>
             {featuredRecipe ? (
-              <div className="flex flex-wrap gap-3 text-[13px] text-white/85">
+              <div className="flex flex-wrap gap-2.5 text-[12px] text-white/85">
                 <span>{formatPrepCook(featuredRecipe)}</span>
                 <span>{getTotalTime(featuredRecipe)} total</span>
                 {featuredRecipe.servings ? <span>{featuredRecipe.servings} servings</span> : null}
@@ -186,11 +186,11 @@ export function HomePage() {
           </div>
 
           {featuredRecipe ? (
-            <div className="absolute bottom-4 right-4 hidden rounded-[24px] border border-white/20 bg-[#fff4e6]/92 px-3.5 py-2.5 shadow-[0_16px_32px_rgba(78,31,9,0.2)] backdrop-blur xl:block dark:border-white/10 dark:bg-[#1b120e]/88">
+            <div className="absolute bottom-3 right-3 hidden rounded-[22px] border border-white/20 bg-[#fff4e6]/92 px-3 py-2 shadow-[0_16px_32px_rgba(78,31,9,0.2)] backdrop-blur xl:block dark:border-white/10 dark:bg-[#1b120e]/88">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-recipe-burnt/70 dark:text-recipe-peel/70">
                 Tonight's pull
               </p>
-              <p className="mt-1 font-display text-lg text-recipe-burnt dark:text-recipe-peel">
+              <p className="mt-1 font-display text-base text-recipe-burnt dark:text-recipe-peel">
                 {featuredRecipe.category ? sentenceCase(featuredRecipe.category) : 'Featured'}
               </p>
             </div>

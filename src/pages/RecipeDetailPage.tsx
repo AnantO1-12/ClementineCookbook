@@ -369,13 +369,11 @@ export function RecipeDetailPage() {
             >
               Close
             </button>
-            <div className="overflow-hidden rounded-[30px] border border-white/12 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+            <div className="flex items-center justify-center overflow-hidden rounded-[30px] border border-white/12 bg-[#120b08] p-3 shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:p-4">
               <RecipeImage
                 src={galleryImageUrls[expandedGalleryIndex]}
                 alt={`${recipe.title} expanded view ${expandedGalleryIndex + 1}`}
-                className={`max-h-[82vh] w-full object-cover ${
-                  GALLERY_MOSAIC_TILES[expandedGalleryIndex % GALLERY_MOSAIC_TILES.length].imageClassName
-                }`}
+                className="block max-h-[82vh] max-w-full object-contain"
                 loading="eager"
               />
             </div>

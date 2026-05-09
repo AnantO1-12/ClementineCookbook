@@ -142,10 +142,10 @@ export function HomePage() {
             </span>
             <div className="space-y-1.5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-recipe-burnt dark:text-recipe-peel sm:text-xs">
-                Clementine Notebook
+                Clementine Cookbook
               </p>
               <p className="max-w-[19rem] text-sm leading-6 text-recipe-burnt/68 dark:text-recipe-copper/88">
-                A softer rhythm for recipes you actually make.
+                Bright flavors for your kitchen adventures
               </p>
             </div>
           </div>
